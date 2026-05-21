@@ -395,6 +395,7 @@
     <input type="password" id="login-pass" placeholder="Password" autocomplete="off">
     <input type="submit" class="btn-primary" onclick="handleAuth('login')" value="Play Now →">
     <div id="login-msg" class="auth-msg"></div>
+    <button class="btn-secondary" onclick="showForgotPassword()">Forgot Password?</button>
     <button class="btn-secondary" onclick="showOverlay('entry-overlay')">← Back</button>
   </div>
 
@@ -403,9 +404,20 @@
     <h2>Create Account</h2>
     <input type="text" id="signup-user" placeholder="Choose a username" autocomplete="off">
     <input type="password" id="signup-pass" placeholder="Choose a password" autocomplete="off">
-    <button class="btn-primary" onclick="handleAuth('signup')">Create & Play →</button>
+    <input type="text" id="signup-hint" placeholder="Password hint (e.g. my dog's name)" autocomplete="off">
     <div id="signup-msg" class="auth-msg"></div>
+    <button class="btn-primary" onclick="handleAuth('signup')">Create & Play →</button>
     <button class="btn-secondary" onclick="showOverlay('entry-overlay')">← Back</button>
+  </div>
+
+  <!-- FORGOT PASSWORD -->
+  <div id="forgot-overlay" class="overlay hidden">
+    <h2>Forgot Password? 🔑</h2>
+    <input type="text" id="forgot-user" placeholder="Enter your username" autocomplete="off">
+    <button class="btn-primary" onclick="lookupHint()">Show My Hint</button>
+    <div id="hint-result" style="margin:10px 0; padding:10px 14px; background:#f0f4fb; border-radius:10px; font-size:0.85rem; font-weight:700; color:var(--navy); width:78%; display:none; text-align:center;"></div>
+    <div id="forgot-msg" class="auth-msg"></div>
+    <button class="btn-secondary" onclick="showOverlay('login-overlay')">← Back to Login</button>
   </div>
 
   <!-- READY -->
@@ -498,6 +510,37 @@ function setMsg(id, text, type) {
   el.className = 'auth-msg ' + (type || '');
 }
 
+// ── FORGOT PASSWORD ───────────────────────────────────────────────────────
+function showForgotPassword() {
+  document.getElementById('forgot-user').value = '';
+  document.getElementById('hint-result').style.display = 'none';
+  document.getElementById('hint-result').innerText = '';
+  document.getElementById('forgot-msg').innerText = '';
+  showOverlay('forgot-overlay');
+}
+
+function lookupHint() {
+  var username = document.getElementById('forgot-user').value.trim();
+  var msgEl    = document.getElementById('forgot-msg');
+  var hintEl   = document.getElementById('hint-result');
+
+  if (!username) { setMsg('forgot-msg', 'Please enter your username.', 'error'); return; }
+
+  setMsg('forgot-msg', 'Looking up…', 'info');
+  hintEl.style.display = 'none';
+
+  db.ref('users/' + username).once('value').then(function(snapshot) {
+    if (!snapshot.exists()) {
+      setMsg('forgot-msg', 'Username not found.', 'error');
+      return;
+    }
+    var hint = snapshot.val().hint || 'No hint was set for this account.';
+    msgEl.innerText = '';
+    hintEl.innerText = '💡 Your hint: ' + hint;
+    hintEl.style.display = 'block';
+  });
+}
+
 // ── AUTH ──────────────────────────────────────────────────────────────────
 function handleAuth(type) {
   var isLogin   = type === 'login';
@@ -539,6 +582,7 @@ function handleAuth(type) {
 
     } else {
       // SIGNUP: check username not already taken
+      var hint = document.getElementById('signup-hint').value.trim();
       userRef.once('value').then(function(snapshot) {
         if (snapshot.exists()) {
           setMsg(msgId, 'Username already taken.', 'error');
@@ -547,6 +591,7 @@ function handleAuth(type) {
         // Create new account
         userRef.set({
           password: hashedPw,
+          hint: hint || 'No hint set',
           level: 1,
           xp: 0,
           taxiUnlocked: false
@@ -590,6 +635,7 @@ function handleLogout() {
   document.getElementById('login-pass').value  = '';
   document.getElementById('signup-user').value = '';
   document.getElementById('signup-pass').value = '';
+  document.getElementById('signup-hint').value = '';
   document.getElementById('login-msg').innerText   = '';
   document.getElementById('signup-msg').innerText  = '';
   updateXPUI();
