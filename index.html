@@ -6,339 +6,235 @@
   <title>Brain Training Pro</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <style>
     :root {
-      --navy: #0a1628;
-      --navy-mid: #112244;
-      --gold: #f5c518;
-      --gold-dark: #c9a00d;
-      --soft-blue: #c8d8f0;
-      --green: #00d084;
-      --green-dark: #00a065;
-      --red: #ff3e55;
-      --red-dark: #cc1f38;
-      --bg: #f0f4fb;
-      --card: #ffffff;
-      --text: #0a1628;
-      --muted: #6b7a99;
-      --ring: #dce8f8;
+      --navy:#0a1628; --navy-mid:#112244; --gold:#f5c518; --gold-dark:#c9a00d;
+      --soft-blue:#c8d8f0; --green:#00d084; --green-dark:#00a065;
+      --red:#ff3e55; --red-dark:#cc1f38; --bg:#f0f4fb;
+      --muted:#6b7a99; --ring:#dce8f8; --warm:#fff8f0;
     }
-
-    *, *::before, *::after { box-sizing: border-box; }
-
-    html, body {
-      margin: 0; padding: 0; min-height: 100vh;
-      overflow-y: auto;
-      font-family: 'Nunito', sans-serif;
-      background: var(--bg);
-    }
-
-    body {
-      display: flex; flex-direction: column; align-items: center;
-      padding-bottom: 60px;
-      background: radial-gradient(ellipse at 60% 0%, #d4e8ff 0%, var(--bg) 60%);
-    }
+    *,*::before,*::after{box-sizing:border-box;}
+    html,body{margin:0;padding:0;min-height:100vh;overflow-y:auto;font-family:'Nunito',sans-serif;background:var(--bg);}
+    body{display:flex;flex-direction:column;align-items:center;padding-bottom:60px;background:radial-gradient(ellipse at 60% 0%,#d4e8ff 0%,var(--bg) 60%);}
 
     /* ── UTILITY BAR ── */
-    .utility-bar {
-      width: 100%; background: var(--navy);
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0 20px; height: 48px;
-    }
+    .utility-bar{width:100%;background:var(--navy);display:flex;justify-content:space-between;align-items:center;padding:0 14px;height:52px;position:relative;z-index:2000;}
+    .app-logo{font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:900;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
+    .bar-right{display:flex;align-items:center;gap:8px;}
 
-    .app-logo {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.75rem; font-weight: 900;
-      color: var(--gold); letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+    /* icon buttons in bar */
+    .icon-btn{background:transparent;border:none;cursor:pointer;padding:6px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;position:relative;}
+    .icon-btn:hover{background:rgba(255,255,255,0.1);}
+    .icon-btn svg{display:block;}
 
-    #logout-btn {
-      background: transparent; color: #aab8d0;
-      border: 1px solid #2a3a5c; border-radius: 6px;
-      padding: 5px 14px; font-size: 0.78rem; cursor: pointer;
-      font-family: 'Nunito', sans-serif; font-weight: 700;
-      letter-spacing: 0.5px; transition: all 0.2s;
-    }
-    #logout-btn:hover { border-color: var(--red); color: var(--red); }
+    #logout-btn{background:transparent;color:#aab8d0;border:1px solid #2a3a5c;border-radius:6px;padding:5px 14px;font-size:0.82rem;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;transition:all 0.2s;}
+    #logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+    /* badge notification dot */
+    .badge-dot{position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:var(--red);border:2px solid var(--navy);display:none;}
+    .badge-dot.active{display:block;animation:dot-pulse 1.5s infinite;}
+    @keyframes dot-pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.4);}}
+
+    /* ── SIDE MENU ── */
+    #side-menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9000;display:none;}
+    #side-menu-overlay.open{display:block;}
+    #side-menu{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#fff;z-index:9001;box-shadow:4px 0 24px rgba(0,0,0,0.18);transition:left 0.28s ease;display:flex;flex-direction:column;padding:0;}
+    #side-menu.open{left:0;}
+    .side-menu-header{background:var(--navy);padding:20px 18px 16px;display:flex;align-items:center;gap:12px;}
+    .side-menu-header svg{flex-shrink:0;}
+    .side-menu-header-text h3{margin:0;font-family:'Orbitron',sans-serif;font-size:0.75rem;color:var(--gold);letter-spacing:1.5px;}
+    .side-menu-header-text p{margin:2px 0 0;font-size:0.78rem;color:#8899bb;font-weight:600;}
+    .side-menu-body{padding:16px 14px;flex:1;}
+    .side-menu-item{display:flex;align-items:center;gap:14px;padding:14px 12px;border-radius:12px;cursor:pointer;transition:background 0.2s;border:none;background:transparent;width:100%;text-align:left;font-family:'Nunito',sans-serif;}
+    .side-menu-item:hover{background:#f0f4fb;}
+    .side-menu-item-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .side-menu-item-text strong{display:block;font-size:0.95rem;font-weight:800;color:var(--navy);}
+    .side-menu-item-text span{font-size:0.78rem;color:var(--muted);font-weight:600;}
+    .side-menu-close{margin:0 14px 16px;padding:10px;border-radius:10px;border:1.5px solid #dce8f8;background:transparent;cursor:pointer;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700;color:var(--muted);transition:all 0.2s;}
+    .side-menu-close:hover{border-color:var(--navy);color:var(--navy);}
+
+    /* ── BADGES PANEL ── */
+    #badges-panel{position:fixed;inset:0;background:rgba(10,22,40,0.6);z-index:9500;display:none;align-items:flex-end;justify-content:center;}
+    #badges-panel.open{display:flex;}
+    .badges-sheet{background:#fff;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:0 0 30px;max-height:85vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,0.2);}
+    .badges-sheet-handle{width:40px;height:4px;background:#dce8f8;border-radius:4px;margin:12px auto 0;}
+    .badges-sheet-header{padding:16px 20px 12px;border-bottom:1px solid #f0f4fb;display:flex;align-items:center;justify-content:space-between;}
+    .badges-sheet-header h2{margin:0;font-size:1.1rem;font-weight:900;color:var(--navy);}
+    .badges-sheet-header span{font-size:0.8rem;color:var(--muted);font-weight:700;}
+    .badges-close{background:transparent;border:none;cursor:pointer;font-size:1.4rem;color:var(--muted);line-height:1;padding:2px 6px;}
+    .badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:16px 16px;}
+    .badge-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px 8px;border-radius:16px;background:#fafbff;border:2px solid #edf1fa;transition:all 0.3s;position:relative;}
+    .badge-card.unlocked{background:var(--warm);border-color:#f5c518;}
+    .badge-card.locked{opacity:0.6;}
+    .badge-icon-wrap{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;position:relative;}
+    .badge-card.locked .badge-icon-wrap::after{content:'🔒';position:absolute;bottom:-2px;right:-2px;font-size:14px;background:#fff;border-radius:50%;padding:1px;}
+    .badge-card.locked svg{filter:grayscale(1);}
+    .badge-name{font-size:0.72rem;font-weight:900;color:var(--navy);line-height:1.2;margin-bottom:3px;}
+    .badge-desc{font-size:0.62rem;color:var(--muted);font-weight:600;line-height:1.3;}
+    .badge-card.unlocked .badge-name{color:#8a6200;}
+
+    /* ── BADGE UNLOCK NOTIFICATION ── */
+    #badge-notification{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:9800;background:var(--navy);color:#fff;border-radius:16px;padding:12px 20px;display:none;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,0.25);border-bottom:3px solid var(--gold);min-width:260px;max-width:340px;}
+    #badge-notification.show{display:flex;animation:notif-in 0.35s ease-out;}
+    @keyframes notif-in{from{transform:translateX(-50%) translateY(-20px);opacity:0;}to{transform:translateX(-50%) translateY(0);opacity:1;}}
+    .notif-icon{width:40px;height:40px;border-radius:50%;background:rgba(245,197,24,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .notif-text strong{display:block;font-size:0.88rem;font-weight:900;color:var(--gold);}
+    .notif-text span{font-size:0.78rem;color:#c8d8f0;font-weight:600;}
 
     /* ── PROFILE STRIP ── */
-    .user-profile {
-      width: 100%; max-width: 420px;
-      display: flex; align-items: center;
-      gap: 12px; padding: 14px 18px;
-    }
-
-    .profile-icon {
-      width: 42px; height: 42px; border-radius: 50%;
-      background: var(--navy); color: var(--soft-blue);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; box-shadow: 0 2px 8px rgba(10,22,40,0.15);
-    }
-
-    .user-meta { display: flex; flex-direction: column; flex: 1; }
-    #user-name { font-weight: 900; font-size: 0.95rem; color: var(--navy); line-height: 1.2; }
-    #level-badge {
-      font-size: 0.72rem; color: var(--muted); font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.8px;
-    }
-
-    /* XP pip bar */
-    .xp-pips {
-      display: flex; gap: 5px; align-items: center; flex-shrink: 0;
-    }
-    .pip {
-      width: 14px; height: 14px; border-radius: 50%;
-      background: #dce8f8; border: 2px solid #c0d0e8;
-      transition: background 0.4s, border-color 0.4s, transform 0.3s;
-    }
-    .pip.filled {
-      background: var(--green);
-      border-color: var(--green-dark);
-      transform: scale(1.1);
-      box-shadow: 0 0 6px rgba(0,208,132,0.5);
-    }
+    .user-profile{width:100%;max-width:440px;display:flex;align-items:center;gap:12px;padding:12px 16px;}
+    .profile-icon{width:42px;height:42px;border-radius:50%;background:var(--navy);color:var(--soft-blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(10,22,40,0.15);}
+    .user-meta{display:flex;flex-direction:column;flex:1;}
+    #user-name{font-weight:900;font-size:1rem;color:var(--navy);line-height:1.2;}
+    #level-badge{font-size:0.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;}
+    .xp-pips{display:flex;gap:5px;align-items:center;flex-shrink:0;}
+    .pip{width:15px;height:15px;border-radius:50%;background:#dce8f8;border:2px solid #c0d0e8;transition:background 0.4s,border-color 0.4s,transform 0.3s;}
+    .pip.filled{background:var(--green);border-color:var(--green-dark);transform:scale(1.1);box-shadow:0 0 6px rgba(0,208,132,0.5);}
 
     /* ── TUTORIAL BANNER ── */
-    #tutorial-banner {
-      width: 100%; max-width: 400px; margin: 6px auto 0;
-      padding: 0 16px;
-    }
-    .tutorial-box {
-      background: var(--navy); color: white;
-      padding: 12px 16px; border-radius: 14px;
-      text-align: center;
-      box-shadow: 0 6px 20px rgba(10,22,40,0.2);
-      border-bottom: 3px solid var(--gold);
-    }
-    .tutorial-box h2 {
-      margin: 0 0 4px; font-size: 0.75rem;
-      color: var(--gold); text-transform: uppercase;
-      letter-spacing: 1.5px; font-family: 'Orbitron', sans-serif;
-    }
-    .tutorial-box p { margin: 0 0 10px; font-size: 0.9rem; color: #c8d8f0; font-weight: 600; }
-
-    .tutorial-highlight {
-      outline: 4px solid var(--gold) !important;
-      outline-offset: 5px;
-      border-radius: 12px;
-      z-index: 1600 !important;
-      animation: pulse-gold 1.2s infinite;
-    }
-    @keyframes pulse-gold {
-      0%, 100% { outline-color: var(--gold); outline-width: 4px; }
-      50% { outline-color: #ffe066; outline-width: 7px; }
-    }
+    #tutorial-banner{width:100%;max-width:440px;margin:4px auto 0;padding:0 14px;}
+    .tutorial-box{background:var(--navy);padding:12px 16px;border-radius:14px;text-align:center;box-shadow:0 6px 20px rgba(10,22,40,0.2);border-bottom:3px solid var(--gold);}
+    .tutorial-box h2{margin:0 0 4px;font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;font-family:'Orbitron',sans-serif;}
+    .tutorial-box p{margin:0 0 10px;font-size:0.9rem;color:#c8d8f0;font-weight:600;}
+    .tutorial-highlight{outline:4px solid var(--gold)!important;outline-offset:5px;border-radius:12px;z-index:1600!important;animation:pulse-gold 1.2s infinite;}
+    @keyframes pulse-gold{0%,100%{outline-color:var(--gold);outline-width:4px;}50%{outline-color:#ffe066;outline-width:7px;}}
 
     /* ── PLAY AREA ── */
-    #play-area {
-      position: relative; width: 420px; height: 420px;
-      border-radius: 50%;
-      border: 6px solid var(--ring);
-      box-shadow: 0 0 0 2px #c0d4f0, 0 12px 40px rgba(10,22,40,0.12);
-      margin: 10px auto;
-      background: #fff;
-      overflow: hidden; z-index: 500;
-    }
+    #play-area{position:relative;width:420px;height:420px;border-radius:50%;border:6px solid var(--ring);box-shadow:0 0 0 2px #c0d4f0,0 12px 40px rgba(10,22,40,0.12);margin:10px auto;background:#fff;overflow:hidden;z-index:500;}
 
     /* ── OVERLAYS ── */
-    .overlay {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      background: #fff; z-index: 2000;
-      padding: 30px 28px; text-align: center;
-      border-radius: 50%;
-    }
-
-    .overlay h2 {
-      margin: 0 0 14px; font-size: 1.25rem;
-      color: var(--navy); font-weight: 900;
-    }
-
-    .hidden { display: none !important; }
+    .overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#fff;z-index:2000;padding:30px 28px;text-align:center;border-radius:50%;}
+    .overlay h2{margin:0 0 12px;font-size:1.25rem;color:var(--navy);font-weight:900;}
+    .hidden{display:none!important;}
 
     /* ── BUTTONS ── */
-    .btn-primary {
-      background: var(--gold); color: var(--navy);
-      border: none; padding: 11px 20px;
-      border-radius: 12px; font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 4px 0 var(--gold-dark);
-      margin: 5px 0; width: 78%;
-      font-size: 0.88rem;
-      font-family: 'Nunito', sans-serif;
-      transition: transform 0.1s, box-shadow 0.1s;
-      letter-spacing: 0.3px;
-    }
-    .btn-primary:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--gold-dark); }
-    .btn-primary:hover { background: #ffd330; }
+    .btn-primary{background:var(--gold);color:var(--navy);border:none;padding:11px 20px;border-radius:12px;font-weight:900;cursor:pointer;box-shadow:0 4px 0 var(--gold-dark);margin:4px 0;width:78%;font-size:0.9rem;font-family:'Nunito',sans-serif;transition:transform 0.1s,box-shadow 0.1s;letter-spacing:0.3px;}
+    .btn-primary:active{transform:translateY(2px);box-shadow:0 2px 0 var(--gold-dark);}
+    .btn-primary:hover{background:#ffd330;}
+    .btn-secondary{background:transparent;color:var(--muted);border:1.5px solid #dce8f8;padding:8px 16px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:5px;width:60%;font-size:0.78rem;font-family:'Nunito',sans-serif;transition:border-color 0.2s,color 0.2s;}
+    .btn-secondary:hover{border-color:#b0c8e8;color:var(--navy);}
+    input{padding:10px 14px;border:2px solid #dce8f8;border-radius:10px;margin-bottom:7px;width:78%;text-align:center;font-size:0.88rem;font-family:'Nunito',sans-serif;font-weight:600;color:var(--navy);outline:none;transition:border-color 0.2s;}
+    input:focus{border-color:var(--navy);}
+    .auth-msg{font-size:0.78rem;font-weight:700;margin:3px 0 0;min-height:16px;}
+    .auth-msg.error{color:var(--red);}
+    .auth-msg.info{color:var(--muted);}
 
-    .btn-secondary {
-      background: transparent; color: var(--muted);
-      border: 1.5px solid #dce8f8; padding: 8px 16px;
-      border-radius: 10px; font-weight: 700;
-      cursor: pointer; margin-top: 6px; width: 60%;
-      font-size: 0.78rem; font-family: 'Nunito', sans-serif;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-secondary:hover { border-color: #b0c8e8; color: var(--navy); }
-
-    input {
-      padding: 10px 14px; border: 2px solid #dce8f8;
-      border-radius: 10px; margin-bottom: 8px; width: 78%;
-      text-align: center; font-size: 0.88rem;
-      font-family: 'Nunito', sans-serif; font-weight: 600;
-      color: var(--navy); outline: none;
-      transition: border-color 0.2s;
-    }
-    input:focus { border-color: var(--navy); }
-
-    .auth-msg {
-      font-size: 0.78rem; font-weight: 700; margin: 4px 0 0;
-      min-height: 18px; letter-spacing: 0.2px;
-    }
-    .auth-msg.error { color: var(--red); }
-    .auth-msg.info  { color: var(--muted); }
+    /* ── OVERLAYS special ── */
+    #entry-overlay h1{font-family:'Orbitron',sans-serif;font-size:1.05rem;color:var(--navy);margin-bottom:4px;letter-spacing:1px;}
+    #entry-overlay p{font-size:0.8rem;color:var(--muted);margin:0 0 16px;font-weight:700;}
+    #failure-overlay h2{color:var(--red)!important;}
+    #failure-overlay p{color:var(--muted);font-size:0.82rem;margin:0 0 12px;font-weight:700;}
+    #selection-overlay::before{content:"Which vehicle did you see?";position:absolute;top:26%;font-size:0.78rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;}
 
     /* ── GAME ELEMENTS ── */
-    #center-target {
-      font-size: 80px; line-height: 1;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
-      transition: transform 0.3s;
-    }
+    #center-target{font-size:80px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.12));transition:transform 0.3s;}
+    .sign{position:absolute;width:64px;height:64px;margin-left:-32px;margin-top:-32px;font-size:44px;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;user-select:none;}
+    .clickable{cursor:pointer;pointer-events:auto;}
+    .clickable:hover{transform:scale(1.15)!important;}
+    .choice-container{display:flex;gap:14px;justify-content:center;margin-top:8px;}
+    .choice{font-size:2.8rem;cursor:pointer;padding:8px 10px;border-radius:14px;background:var(--bg);border:2.5px solid transparent;transition:transform 0.15s,border-color 0.15s,background 0.15s;line-height:1;}
+    .choice:hover{transform:scale(1.18);background:#e8f0ff;border-color:var(--soft-blue);}
 
-    .sign {
-      position: absolute; width: 64px; height: 64px;
-      margin-left: -32px; margin-top: -32px;
-      font-size: 44px;
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.2s;
-      user-select: none;
-    }
-    .clickable { cursor: pointer; pointer-events: auto; }
-    .clickable:hover { transform: scale(1.15) !important; }
-    .sign.clickable::after {
-      content: '';
-      position: absolute; inset: 2px;
-      border-radius: 50%;
-      background: rgba(10,22,40,0.04);
-      transition: background 0.2s;
-    }
-    .sign.clickable:hover::after { background: rgba(10,22,40,0.09); }
+    /* ── TAXI TOAST ── */
+    #taxi-unlock-toast{position:absolute;inset:0;z-index:3000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,22,40,0.85);border-radius:50%;animation:toast-in 0.3s ease-out;}
+    #taxi-unlock-toast .toast-emoji{font-size:3.2rem;line-height:1;}
+    #taxi-unlock-toast .toast-title{font-family:'Orbitron',sans-serif;font-size:0.7rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin:10px 0 4px;font-weight:900;}
+    #taxi-unlock-toast .toast-body{font-size:0.88rem;color:#c8d8f0;font-weight:700;margin:0;}
+    @keyframes toast-in{from{opacity:0;}to{opacity:1;}}
 
-    /* ── TAXI UNLOCK TOAST ── */
-    #taxi-unlock-toast {
-      position: absolute; inset: 0; z-index: 3000;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      background: rgba(10,22,40,0.82);
-      border-radius: 50%;
-      animation: toast-in 0.3s ease-out;
-    }
-    #taxi-unlock-toast .toast-emoji {
-      font-size: 3.2rem; line-height: 1;
-      animation: taxi-pop 0.5s 0.1s ease-out both;
-    }
-    #taxi-unlock-toast .toast-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.72rem; color: var(--gold);
-      letter-spacing: 2px; text-transform: uppercase;
-      margin: 10px 0 4px; font-weight: 900;
-    }
-    #taxi-unlock-toast .toast-body {
-      font-size: 0.88rem; color: #c8d8f0;
-      font-weight: 700; margin: 0;
-    }
-    @keyframes toast-in {
-      from { opacity: 0; } to { opacity: 1; }
-    }
-    @keyframes taxi-pop {
-      0%   { transform: scale(0.4) rotate(-15deg); opacity: 0; }
-      60%  { transform: scale(1.2) rotate(5deg);  opacity: 1; }
-      100% { transform: scale(1)   rotate(0deg); }
-    }
-
-    /* ── VEHICLE CHOICES ── */
-    .choice-container {
-      display: flex; gap: 14px;
-      justify-content: center; margin-top: 10px;
-    }
-    .choice {
-      font-size: 2.8rem; cursor: pointer;
-      padding: 8px 10px; border-radius: 14px;
-      background: var(--bg);
-      border: 2.5px solid transparent;
-      transition: transform 0.15s, border-color 0.15s, background 0.15s;
-      line-height: 1;
-    }
-    .choice:hover {
-      transform: scale(1.18);
-      background: #e8f0ff;
-      border-color: var(--soft-blue);
-    }
-
-    /* ── SELECTION OVERLAY LABEL ── */
-    #selection-overlay::before {
-      content: "Which vehicle did you see?";
-      position: absolute;
-      top: 28%;
-      font-size: 0.78rem;
-      font-weight: 800;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-    }
-
-    /* ── FAILURE OVERLAY ── */
-    #failure-overlay h2 { color: var(--red) !important; font-size: 1.4rem !important; }
-    #failure-overlay p { color: var(--muted); font-size: 0.82rem; margin: 0 0 14px; font-weight: 700; }
-
-    /* ── ENTRY / READY ── */
-    #entry-overlay h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.1rem; color: var(--navy);
-      margin-bottom: 6px; letter-spacing: 1px;
-    }
-    #entry-overlay p {
-      font-size: 0.78rem; color: var(--muted);
-      margin: 0 0 18px; font-weight: 700;
-    }
-
-    #start-overlay h2 { font-size: 1.5rem !important; }
+    /* ── HINT BOX ── */
+    #hint-result{margin:8px 0;padding:10px 14px;background:#f0f4fb;border-radius:10px;font-size:0.85rem;font-weight:700;color:var(--navy);width:78%;display:none;text-align:center;}
 
     /* ── SAVE TAG ── */
-    #save-tag {
-      position: fixed; bottom: 6px; right: 8px;
-      font-size: 9px; color: #c0c8d8;
-      font-family: monospace; letter-spacing: 1px;
-    }
+    #save-tag{position:fixed;bottom:6px;right:8px;font-size:9px;color:#c0c8d8;font-family:monospace;letter-spacing:1px;}
 
-    /* ── ANIMATIONS ── */
-    @keyframes pop-in {
-      0% { transform: scale(0.85); opacity: 0; }
-      70% { transform: scale(1.05); }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .overlay:not(.hidden) { animation: pop-in 0.22s ease-out; }
-
-    @keyframes sign-appear {
-      from { transform: scale(0.5) translate(-50%, -50%) !important; opacity: 0; }
-      to { transform: scale(1) translate(0, 0) !important; opacity: 1; }
-    }
+    @keyframes pop-in{0%{transform:scale(0.85);opacity:0;}70%{transform:scale(1.05);}100%{transform:scale(1);opacity:1;}}
+    .overlay:not(.hidden){animation:pop-in 0.22s ease-out;}
   </style>
 </head>
 <body>
+<div id="save-tag">SAVE 3.0.0</div>
 
-<div id="save-tag">SAVE 2.1.0</div>
+<!-- BADGE UNLOCK NOTIFICATION -->
+<div id="badge-notification">
+  <div class="notif-icon" id="notif-icon-wrap"></div>
+  <div class="notif-text">
+    <strong id="notif-title">Badge Unlocked!</strong>
+    <span id="notif-body">Well done!</span>
+  </div>
+</div>
 
 <!-- UTILITY BAR -->
 <div class="utility-bar">
-  <span class="app-logo">Brain Training</span>
-  <button id="logout-btn" class="hidden" onclick="handleLogout()">Log Out</button>
+  <button class="icon-btn" onclick="toggleSideMenu()" title="Menu">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c8d8f0" stroke-width="2.2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <span class="app-logo">Brain Training Pro</span>
+  <div class="bar-right">
+    <button class="icon-btn" id="badges-btn" onclick="openBadges()" title="My Badges">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c8d8f0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+      </svg>
+      <div class="badge-dot" id="badge-dot"></div>
+    </button>
+    <button id="logout-btn" class="hidden" onclick="handleLogout()">Log Out</button>
+  </div>
+</div>
+
+<!-- SIDE MENU OVERLAY -->
+<div id="side-menu-overlay" onclick="closeSideMenu()"></div>
+<div id="side-menu">
+  <div class="side-menu-header">
+    <svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="18" fill="#1a2e52"/><path d="M18 8c5.52 0 10 4.48 10 10s-4.48 10-10 10S8 23.52 8 18 12.48 8 18 8zm0 3a4 4 0 100 8 4 4 0 000-8zm0 9c-3.33 0-6.24 1.7-7.95 4.27A7.97 7.97 0 0018 26c2.9 0 5.45-1.55 6.95-3.87C23.19 20.07 20.73 20 18 20z" fill="#c8d8f0"/></svg>
+    <div class="side-menu-header-text">
+      <h3>Brain Training</h3>
+      <p id="side-menu-username">Welcome!</p>
+    </div>
+  </div>
+  <div class="side-menu-body">
+    <button class="side-menu-item" onclick="replayTutorial()">
+      <div class="side-menu-item-icon" style="background:#fff8e0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a00d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+        </svg>
+      </div>
+      <div class="side-menu-item-text">
+        <strong>Replay Tutorial</strong>
+        <span>Review how to play</span>
+      </div>
+    </button>
+    <button class="side-menu-item" onclick="openBadges();closeSideMenu();">
+      <div class="side-menu-item-icon" style="background:#f0f4fb;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+        </svg>
+      </div>
+      <div class="side-menu-item-text">
+        <strong>My Badges</strong>
+        <span>View achievements</span>
+      </div>
+    </button>
+  </div>
+  <button class="side-menu-close" onclick="closeSideMenu()">✕ Close Menu</button>
+</div>
+
+<!-- BADGES PANEL -->
+<div id="badges-panel" onclick="closeBadgesPanel(event)">
+  <div class="badges-sheet">
+    <div class="badges-sheet-handle"></div>
+    <div class="badges-sheet-header">
+      <h2>🏅 My Badges</h2>
+      <div>
+        <span id="badges-count">0 / 9 earned</span>
+        <button class="badges-close" onclick="closeBadges()">✕</button>
+      </div>
+    </div>
+    <div class="badges-grid" id="badges-grid"></div>
+  </div>
 </div>
 
 <!-- PROFILE STRIP -->
@@ -366,10 +262,7 @@
   <div class="tutorial-box">
     <h2 id="tutorial-title">Step 1</h2>
     <p id="tutorial-text"></p>
-    <button class="btn-primary" id="tutorial-next-btn"
-      style="width: auto; padding: 7px 22px; font-size:0.82rem; margin: 0;">
-      Continue →
-    </button>
+    <button class="btn-primary" id="tutorial-next-btn" style="width:auto;padding:7px 22px;font-size:0.82rem;margin:0;">Continue →</button>
   </div>
 </div>
 
@@ -377,18 +270,13 @@
 <div id="play-area">
   <div id="peripheral-grid"></div>
 
-  <!-- ENTRY -->
   <div id="entry-overlay" class="overlay">
     <h1>Brain Training Pro</h1>
-    <p>Sharpen memory & reaction speed</p>
+    <p>Sharpen memory &amp; reaction speed</p>
     <button onclick="showOverlay('login-overlay')" class="btn-primary">Log In</button>
-    <button onclick="showOverlay('signup-overlay')" class="btn-primary"
-      style="background:#f0f4fb; color:var(--navy); box-shadow:0 4px 0 #c8d8f0;">
-      Sign Up
-    </button>
+    <button onclick="showOverlay('signup-overlay')" class="btn-primary" style="background:#f0f4fb;color:var(--navy);box-shadow:0 4px 0 #c8d8f0;">Sign Up</button>
   </div>
 
-  <!-- LOGIN -->
   <div id="login-overlay" class="overlay hidden">
     <h2>Welcome Back 👋</h2>
     <input type="text" id="login-user" placeholder="Username" autocomplete="off">
@@ -399,207 +287,314 @@
     <button class="btn-secondary" onclick="showOverlay('entry-overlay')">← Back</button>
   </div>
 
-  <!-- SIGNUP -->
   <div id="signup-overlay" class="overlay hidden">
     <h2>Create Account</h2>
     <input type="text" id="signup-user" placeholder="Choose a username" autocomplete="off">
     <input type="password" id="signup-pass" placeholder="Choose a password" autocomplete="off">
     <input type="text" id="signup-hint" placeholder="Password hint (e.g. my dog's name)" autocomplete="off">
     <div id="signup-msg" class="auth-msg"></div>
-    <button class="btn-primary" onclick="handleAuth('signup')">Create & Play →</button>
+    <button class="btn-primary" onclick="handleAuth('signup')">Create &amp; Play →</button>
     <button class="btn-secondary" onclick="showOverlay('entry-overlay')">← Back</button>
   </div>
 
-  <!-- FORGOT PASSWORD -->
   <div id="forgot-overlay" class="overlay hidden">
     <h2>Forgot Password? 🔑</h2>
     <input type="text" id="forgot-user" placeholder="Enter your username" autocomplete="off">
     <button class="btn-primary" onclick="lookupHint()">Show My Hint</button>
-    <div id="hint-result" style="margin:10px 0; padding:10px 14px; background:#f0f4fb; border-radius:10px; font-size:0.85rem; font-weight:700; color:var(--navy); width:78%; display:none; text-align:center;"></div>
+    <div id="hint-result"></div>
     <div id="forgot-msg" class="auth-msg"></div>
     <button class="btn-secondary" onclick="showOverlay('login-overlay')">← Back to Login</button>
   </div>
 
-  <!-- READY -->
   <div id="start-overlay" class="overlay hidden">
-    <h2>Ready? 🧠</h2>
+    <h2 style="font-size:1.5rem;">Ready? 🧠</h2>
     <button class="btn-primary" onclick="startRound()">Start Training</button>
   </div>
 
-  <!-- FAILURE -->
   <div id="failure-overlay" class="overlay hidden">
     <h2>Not Quite!</h2>
     <p>Keep going — you've got this</p>
     <button class="btn-primary" onclick="startRound()">Try Again</button>
   </div>
 
-  <!-- VEHICLE SELECTION -->
   <div id="selection-overlay" class="overlay hidden">
     <div class="choice-container">
-      <div id="choice-car"   class="choice" onclick="selectVehicle('car')">🚗</div>
+      <div id="choice-car" class="choice" onclick="selectVehicle('car')">🚗</div>
       <div id="choice-truck" class="choice" onclick="selectVehicle('truck')">🚚</div>
-      <div id="choice-taxi"  class="choice hidden" onclick="selectVehicle('taxi')">🚕</div>
+      <div id="choice-taxi" class="choice hidden" onclick="selectVehicle('taxi')">🚕</div>
     </div>
   </div>
 
-  <!-- CENTER ANCHOR -->
-  <div id="center-anchor" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none;">
+  <div id="center-anchor" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;">
     <div id="center-target" class="hidden"></div>
   </div>
 </div>
 
 <script>
-// ── FIREBASE INIT ─────────────────────────────────────────────────────────
-const firebaseConfig = {
-  apiKey: "AIzaSyCiJPn8GnutfKFQotR7Mu3upFHEjw_giP0",
-  authDomain: "brain-training-pro.firebaseapp.com",
-  databaseURL: "https://brain-training-pro-default-rtdb.firebaseio.com",
-  projectId: "brain-training-pro",
-  storageBucket: "brain-training-pro.firebasestorage.app",
-  messagingSenderId: "776278558893",
-  appId: "1:776278558893:web:8cd297640463c499075e24",
-  measurementId: "G-D2T12GR1M0"
-};
-firebase.initializeApp(firebaseConfig);
+// ── FIREBASE ──────────────────────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey:"AIzaSyCiJPn8GnutfKFQotR7Mu3upFHEjw_giP0",
+  authDomain:"brain-training-pro.firebaseapp.com",
+  databaseURL:"https://brain-training-pro-default-rtdb.firebaseio.com",
+  projectId:"brain-training-pro",
+  storageBucket:"brain-training-pro.firebasestorage.app",
+  messagingSenderId:"776278558893",
+  appId:"1:776278558893:web:8cd297640463c499075e24"
+});
 var db = firebase.database();
 
-// ── HASH PASSWORD (SHA-256) ───────────────────────────────────────────────
-async function hashPassword(password) {
-  var msgBuffer = new TextEncoder().encode(password);
-  var hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  var hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+async function hashPassword(pw) {
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
 }
 
-// ── STATE ─────────────────────────────────────────────────────────────────
-const EMOJIS = { car: '🚗', truck: '🚚', taxi: '🚕' };
-const XP_MAX = 5;
+// ── BADGE DEFINITIONS ─────────────────────────────────────────────────────
+var BADGES = [
+  {
+    id:'tutorial',
+    name:'First Steps',
+    desc:'Complete the tutorial',
+    color:'#4a90d9',
+    bg:'#e8f4ff',
+    svg:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#4a90d9" opacity="0.15"/><path d="M20 10a10 10 0 100 20A10 10 0 0020 10zm1 15h-2v-6h2v6zm0-8h-2v-2h2v2z" fill="#4a90d9"/></svg>'
+  },
+  {
+    id:'level5',
+    name:'Green Thumb',
+    desc:'Reach Level 5',
+    color:'#2ecc71',
+    bg:'#e8fdf0',
+    svg:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#2ecc71" opacity="0.15"/><path d="M20 30s-8-5-8-12a8 8 0 0116 0c0 7-8 12-8 12z" fill="#2ecc71"/><path d="M20 18v12" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>'
+  },
+  {
+    id:'streak5',
+    name:'Bird Watcher',
+    desc:'5 correct in a row',
+    color:'#e67e22',
+    bg:'#fff4e8',
+    svg:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#e67e22" opacity="0.15"/><path d="M8 22c4-6 8-6 12-2 4-6 8-4 12 0" stroke="#e67e22" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="17" r="3" fill="#e67e22"/><path d="M20 20v6" stroke="#e67e22" stroke-width="2" stroke-linecap="round"/></svg>'
+  },
+  {
+    id:'streak10',
+    name:'Pickleball Pro',
+    desc:'10 correct in a row',
+    color:'#9b59b6',
+    bg:'#f5eeff',
+    svg:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#9b59b6" opacity="0.15"/><circle cx="20" cy="20" r="7" stroke="#9b59b6" stroke-width="2.5"/><path d="M26 14l4-4M14 26l-4 4" stroke="#9b59b6" stroke-width="2" stroke-linecap="round"/></svg>'
+  },
+  {
+    id:'firstmiss',
+    name:'Good Sport',
+    desc:'Complete your first round (win or lose!)',
+    color:'#e74c3c',
+    bg:'#fff0f0',
+    svg:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#e74c3c" opacity="0.15"/><path d="M20 12a8 8 0 100 16 8 8 0 000-16zm0 3c.8 0 1.5.3 2 .8L15.8 22a3 3 0 014.2-7zm0 10c-.8 0-1.5-.3-2-.8l6.2-6.2A3 3 0 0120 25z" fill="#e74c3c"/></svg>'
+  },
+  {
+    id:'login3',
+    name:'Morning Walk',
+    desc:'Log in 3 days in a row',
+    color:'#f39c12',
+    bg:'#fffbe8',
+    svg:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#f39c12" opacity="0.15"/><circle cx="20" cy="20" r="5" fill="#f39c12"/><path d="M20 8v3M20 29v3M8 20h3M29 20h3M11.5 11.5l2 2M26.5 26.5l2 2M11.5 28.5l2-2M26.5 13.5l2-2" stroke="#f39c12" stroke-width="2" stroke-linecap="round"/></svg>'
+  },
+  {
+    id:'login7',
+    name:'Weekly Gardener',
+    desc:'Log in 7 days in a row',
+    color:'#27ae60',
+    bg:'#edfff4',
+    svg:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#27ae60" opacity="0.15"/><path d="M20 28V18" stroke="#27ae60" stroke-width="2" stroke-linecap="round"/><path d="M20 18c0-4 4-6 4-6s0 4-4 6zM20 22c0-3-4-5-4-5s0 4 4 5z" fill="#27ae60"/><path d="M14 30h12" stroke="#27ae60" stroke-width="2" stroke-linecap="round"/></svg>'
+  },
+  {
+    id:'play5min',
+    name:'Tea Time',
+    desc:'Play for 5 minutes total',
+    color:'#1abc9c',
+    bg:'#e8fdf8',
+    svg:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#1abc9c" opacity="0.15"/><path d="M13 16h10l-1.5 9H14.5L13 16z" stroke="#1abc9c" stroke-width="2" stroke-linejoin="round"/><path d="M23 18h2a2 2 0 010 4h-2" stroke="#1abc9c" stroke-width="2" stroke-linecap="round"/><path d="M11 28h18" stroke="#1abc9c" stroke-width="2" stroke-linecap="round"/></svg>'
+  },
+  {
+    id:'play10min',
+    name:'Book Club',
+    desc:'Play for 10 minutes total',
+    color:'#2980b9',
+    bg:'#eaf4ff',
+    svg:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="#2980b9" opacity="0.15"/><path d="M12 14h6a2 2 0 012 2v9a2 2 0 01-2 2h-6V14zM20 16h6a2 2 0 012 2v7a2 2 0 01-2 2h-6" stroke="#2980b9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 16v11" stroke="#2980b9" stroke-width="1.5" stroke-linecap="round"/></svg>'
+  }
+];
 
-var userData  = { name: 'Guest Player', level: 1, xp: 0 };
-var gameState = { targetVehicle: 'car', currentStep: 'none', tutorialActive: false };
+// ── STATE ─────────────────────────────────────────────────────────────────
+var EMOJIS = {car:'🚗',truck:'🚚',taxi:'🚕'};
+var XP_MAX = 5;
+var userData  = {name:'Guest Player',level:1,xp:0};
+var gameState = {targetVehicle:'car',currentStep:'none',tutorialActive:false};
 var taxiUnlocked = false;
 var currentUsername = '';
+var consecutiveStreak = 0;
+var sessionStartTime = 0;
+var totalPlayMs = 0;
+var earnedBadges = {};
+var loginStreak = 0;
+var newBadgeQueue = [];
 
-// ── SAVE PROGRESS TO FIREBASE ─────────────────────────────────────────────
+// ── SAVE PROGRESS ─────────────────────────────────────────────────────────
 function saveProgress() {
   if (!currentUsername) return;
   db.ref('users/' + currentUsername).update({
     level: userData.level,
     xp: userData.xp,
-    taxiUnlocked: taxiUnlocked
+    taxiUnlocked: taxiUnlocked,
+    totalPlayMs: totalPlayMs,
+    earnedBadges: earnedBadges,
+    loginStreak: loginStreak
   });
 }
 
 // ── XP UI ─────────────────────────────────────────────────────────────────
 function updateXPUI() {
   for (var i = 0; i < XP_MAX; i++) {
-    document.getElementById('pip-' + i).classList.toggle('filled', i < userData.xp);
+    document.getElementById('pip-'+i).classList.toggle('filled', i < userData.xp);
   }
   document.getElementById('level-badge').innerText = 'Level ' + userData.level;
 }
 
 // ── OVERLAYS ──────────────────────────────────────────────────────────────
 function showOverlay(id) {
-  document.querySelectorAll('.overlay').forEach(function(ov) { ov.classList.add('hidden'); });
+  document.querySelectorAll('.overlay').forEach(function(ov){ov.classList.add('hidden');});
   if (id !== 'none') document.getElementById(id).classList.remove('hidden');
 }
-
 function setMsg(id, text, type) {
   var el = document.getElementById(id);
   el.innerText = text;
-  el.className = 'auth-msg ' + (type || '');
+  el.className = 'auth-msg ' + (type||'');
 }
 
-// ── FORGOT PASSWORD ───────────────────────────────────────────────────────
-function showForgotPassword() {
-  document.getElementById('forgot-user').value = '';
-  document.getElementById('hint-result').style.display = 'none';
-  document.getElementById('hint-result').innerText = '';
-  document.getElementById('forgot-msg').innerText = '';
-  showOverlay('forgot-overlay');
+// ── SIDE MENU ─────────────────────────────────────────────────────────────
+function toggleSideMenu() {
+  document.getElementById('side-menu').classList.toggle('open');
+  document.getElementById('side-menu-overlay').classList.toggle('open');
+}
+function closeSideMenu() {
+  document.getElementById('side-menu').classList.remove('open');
+  document.getElementById('side-menu-overlay').classList.remove('open');
+}
+function replayTutorial() {
+  closeSideMenu();
+  if (!currentUsername) return;
+  gameState.tutorialActive = true;
+  userData.level = 1; userData.xp = 0;
+  updateXPUI();
+  startRound();
 }
 
-function lookupHint() {
-  var username = document.getElementById('forgot-user').value.trim();
-  var msgEl    = document.getElementById('forgot-msg');
-  var hintEl   = document.getElementById('hint-result');
+// ── BADGES PANEL ──────────────────────────────────────────────────────────
+function openBadges() {
+  document.getElementById('badge-dot').classList.remove('active');
+  renderBadges();
+  document.getElementById('badges-panel').classList.add('open');
+}
+function closeBadges() {
+  document.getElementById('badges-panel').classList.remove('open');
+}
+function closeBadgesPanel(e) {
+  if (e.target === document.getElementById('badges-panel')) closeBadges();
+}
 
-  if (!username) { setMsg('forgot-msg', 'Please enter your username.', 'error'); return; }
-
-  setMsg('forgot-msg', 'Looking up…', 'info');
-  hintEl.style.display = 'none';
-
-  db.ref('users/' + username).once('value').then(function(snapshot) {
-    if (!snapshot.exists()) {
-      setMsg('forgot-msg', 'Username not found.', 'error');
-      return;
-    }
-    var hint = snapshot.val().hint || 'No hint was set for this account.';
-    msgEl.innerText = '';
-    hintEl.innerText = '💡 Your hint: ' + hint;
-    hintEl.style.display = 'block';
+function renderBadges() {
+  var grid = document.getElementById('badges-grid');
+  grid.innerHTML = '';
+  var count = 0;
+  BADGES.forEach(function(b) {
+    var unlocked = !!earnedBadges[b.id];
+    if (unlocked) count++;
+    var card = document.createElement('div');
+    card.className = 'badge-card ' + (unlocked ? 'unlocked' : 'locked');
+    card.innerHTML =
+      '<div class="badge-icon-wrap" style="background:' + (unlocked ? b.bg : '#f0f4fb') + '">' + b.svg + '</div>' +
+      '<div class="badge-name">' + b.name + '</div>' +
+      '<div class="badge-desc">' + b.desc + '</div>';
+    grid.appendChild(card);
   });
+  document.getElementById('badges-count').innerText = count + ' / ' + BADGES.length + ' earned';
+}
+
+// ── BADGE UNLOCK ──────────────────────────────────────────────────────────
+function unlockBadge(id) {
+  if (earnedBadges[id]) return;
+  earnedBadges[id] = true;
+  saveProgress();
+  var badge = BADGES.find(function(b){return b.id===id;});
+  if (!badge) return;
+  newBadgeQueue.push(badge);
+  if (newBadgeQueue.length === 1) showNextBadgeNotif();
+}
+
+function showNextBadgeNotif() {
+  if (newBadgeQueue.length === 0) return;
+  var badge = newBadgeQueue[0];
+  document.getElementById('notif-icon-wrap').innerHTML = badge.svg;
+  document.getElementById('notif-title').innerText = badge.name + ' Unlocked!';
+  document.getElementById('notif-body').innerText = badge.desc;
+  var notif = document.getElementById('badge-notification');
+  notif.classList.add('show');
+  document.getElementById('badge-dot').classList.add('active');
+  setTimeout(function() {
+    notif.classList.remove('show');
+    newBadgeQueue.shift();
+    setTimeout(showNextBadgeNotif, 400);
+  }, 3500);
 }
 
 // ── AUTH ──────────────────────────────────────────────────────────────────
 function handleAuth(type) {
-  var isLogin   = type === 'login';
+  var isLogin = type === 'login';
   var usernameEl = document.getElementById(isLogin ? 'login-user' : 'signup-user');
   var passwordEl = document.getElementById(isLogin ? 'login-pass' : 'signup-pass');
-  var msgId      = isLogin ? 'login-msg' : 'signup-msg';
-
+  var msgId = isLogin ? 'login-msg' : 'signup-msg';
   var username = usernameEl.value.trim();
   var password = passwordEl.value;
-
-  if (!username) { setMsg(msgId, 'Please enter a username.', 'error'); return; }
-  if (!password) { setMsg(msgId, 'Please enter a password.', 'error'); return; }
-
+  if (!username) { setMsg(msgId,'Please enter a username.','error'); return; }
+  if (!password) { setMsg(msgId,'Please enter a password.','error'); return; }
   setMsg(msgId, isLogin ? 'Logging in…' : 'Creating account…', 'info');
 
   hashPassword(password).then(function(hashedPw) {
     var userRef = db.ref('users/' + username);
-
     if (isLogin) {
-      // LOGIN: check username exists and password matches
-      userRef.once('value').then(function(snapshot) {
-        if (!snapshot.exists()) {
-          setMsg(msgId, 'Account not found.', 'error');
-          return;
-        }
-        var data = snapshot.val();
-        if (data.password !== hashedPw) {
-          setMsg(msgId, 'Incorrect password.', 'error');
-          return;
-        }
-        // Success — restore saved progress
+      userRef.once('value').then(function(snap) {
+        if (!snap.exists()) { setMsg(msgId,'Account not found.','error'); return; }
+        var data = snap.val();
+        if (data.password !== hashedPw) { setMsg(msgId,'Incorrect password.','error'); return; }
         userData.name  = username;
         userData.level = data.level || 1;
         userData.xp    = data.xp    || 0;
         taxiUnlocked   = data.taxiUnlocked || false;
+        totalPlayMs    = data.totalPlayMs  || 0;
+        earnedBadges   = data.earnedBadges || {};
+        loginStreak    = data.loginStreak  || 0;
         currentUsername = username;
+        // Update login streak
+        var today = new Date().toDateString();
+        var lastLogin = data.lastLoginDate || '';
+        var yesterday = new Date(Date.now() - 86400000).toDateString();
+        if (lastLogin === yesterday) { loginStreak++; }
+        else if (lastLogin !== today) { loginStreak = 1; }
+        db.ref('users/' + username).update({lastLoginDate: today, loginStreak: loginStreak});
         onAuthSuccess();
       });
-
     } else {
-      // SIGNUP: check username not already taken
       var hint = document.getElementById('signup-hint').value.trim();
-      userRef.once('value').then(function(snapshot) {
-        if (snapshot.exists()) {
-          setMsg(msgId, 'Username already taken.', 'error');
-          return;
-        }
-        // Create new account
+      userRef.once('value').then(function(snap) {
+        if (snap.exists()) { setMsg(msgId,'Username already taken.','error'); return; }
+        var today = new Date().toDateString();
         userRef.set({
-          password: hashedPw,
-          hint: hint || 'No hint set',
-          level: 1,
-          xp: 0,
-          taxiUnlocked: false
+          password: hashedPw, hint: hint || 'No hint set',
+          level:1, xp:0, taxiUnlocked:false,
+          totalPlayMs:0, earnedBadges:{}, loginStreak:1,
+          lastLoginDate: today
         }).then(function() {
-          userData.name  = username;
-          userData.level = 1;
-          userData.xp    = 0;
-          taxiUnlocked   = false;
+          userData.name = username; userData.level = 1; userData.xp = 0;
+          taxiUnlocked = false; totalPlayMs = 0; earnedBadges = {}; loginStreak = 1;
           currentUsername = username;
           onAuthSuccess();
         });
@@ -610,36 +605,64 @@ function handleAuth(type) {
 
 function onAuthSuccess() {
   document.getElementById('user-name').innerText = userData.name;
+  document.getElementById('side-menu-username').innerText = userData.name;
   document.getElementById('logout-btn').classList.remove('hidden');
-  // Restore taxi if already unlocked
-  if (taxiUnlocked) {
-    document.getElementById('choice-taxi').classList.remove('hidden');
-  }
+  if (taxiUnlocked) document.getElementById('choice-taxi').classList.remove('hidden');
   updateXPUI();
+  sessionStartTime = Date.now();
+  // Check login streak badges
+  if (loginStreak >= 3) unlockBadge('login3');
+  if (loginStreak >= 7) unlockBadge('login7');
+  // Check play time badges
+  checkPlayTimeBadges();
   showOverlay('start-overlay');
 }
 
 function handleLogout() {
+  // Save session play time
+  if (sessionStartTime) {
+    totalPlayMs += Date.now() - sessionStartTime;
+    sessionStartTime = 0;
+  }
   saveProgress();
   currentUsername = '';
-  userData  = { name: 'Guest Player', level: 1, xp: 0 };
-  gameState = { targetVehicle: 'car', currentStep: 'none', tutorialActive: false };
-  taxiUnlocked = false;
+  userData = {name:'Guest Player',level:1,xp:0};
+  gameState = {targetVehicle:'car',currentStep:'none',tutorialActive:false};
+  taxiUnlocked = false; consecutiveStreak = 0; earnedBadges = {}; loginStreak = 0;
   document.getElementById('choice-taxi').classList.add('hidden');
   document.getElementById('user-name').innerText = 'Guest Player';
+  document.getElementById('side-menu-username').innerText = 'Welcome!';
   document.getElementById('logout-btn').classList.add('hidden');
   document.getElementById('tutorial-banner').classList.add('hidden');
   document.getElementById('peripheral-grid').innerHTML = '';
   document.getElementById('center-target').classList.add('hidden');
-  document.getElementById('login-user').value  = '';
-  document.getElementById('login-pass').value  = '';
-  document.getElementById('signup-user').value = '';
-  document.getElementById('signup-pass').value = '';
-  document.getElementById('signup-hint').value = '';
-  document.getElementById('login-msg').innerText   = '';
-  document.getElementById('signup-msg').innerText  = '';
+  ['login-user','login-pass','signup-user','signup-pass','signup-hint'].forEach(function(id){document.getElementById(id).value='';});
+  ['login-msg','signup-msg'].forEach(function(id){document.getElementById(id).innerText='';});
   updateXPUI();
   showOverlay('entry-overlay');
+}
+
+// ── FORGOT PASSWORD ───────────────────────────────────────────────────────
+function showForgotPassword() {
+  document.getElementById('forgot-user').value = '';
+  document.getElementById('hint-result').style.display = 'none';
+  document.getElementById('hint-result').innerText = '';
+  document.getElementById('forgot-msg').innerText = '';
+  showOverlay('forgot-overlay');
+}
+function lookupHint() {
+  var username = document.getElementById('forgot-user').value.trim();
+  if (!username) { setMsg('forgot-msg','Please enter your username.','error'); return; }
+  setMsg('forgot-msg','Looking up…','info');
+  var hintEl = document.getElementById('hint-result');
+  hintEl.style.display = 'none';
+  db.ref('users/'+username).once('value').then(function(snap) {
+    if (!snap.exists()) { setMsg('forgot-msg','Username not found.','error'); return; }
+    var hint = snap.val().hint || 'No hint was set for this account.';
+    document.getElementById('forgot-msg').innerText = '';
+    hintEl.innerText = '💡 Your hint: ' + hint;
+    hintEl.style.display = 'block';
+  });
 }
 
 // ── DIFFICULTY ────────────────────────────────────────────────────────────
@@ -652,31 +675,35 @@ function getFlashTime() {
   return t;
 }
 
+// ── PLAY TIME ─────────────────────────────────────────────────────────────
+function checkPlayTimeBadges() {
+  var totalMins = (totalPlayMs + (sessionStartTime ? Date.now() - sessionStartTime : 0)) / 60000;
+  if (totalMins >= 5)  unlockBadge('play5min');
+  if (totalMins >= 10) unlockBadge('play10min');
+}
+
 // ── START ROUND ───────────────────────────────────────────────────────────
 function startRound() {
   showOverlay('none');
   document.getElementById('peripheral-grid').innerHTML = '';
   document.getElementById('center-target').classList.add('hidden');
+  checkPlayTimeBadges();
   playRound();
 }
 
 // ── PLAY ROUND ────────────────────────────────────────────────────────────
 function playRound() {
   gameState.currentStep = 'flash';
-
   if (userData.level === 1 && userData.xp === 0 && !gameState.tutorialActive) {
     gameState.tutorialActive = true;
   }
-
-  var pool = taxiUnlocked ? ['car', 'truck', 'taxi'] : ['car', 'truck'];
-  gameState.targetVehicle = pool[Math.floor(Math.random() * pool.length)];
-
+  var pool = taxiUnlocked ? ['car','truck','taxi'] : ['car','truck'];
+  gameState.targetVehicle = pool[Math.floor(Math.random()*pool.length)];
   var center = document.getElementById('center-target');
   center.innerHTML = EMOJIS[gameState.targetVehicle];
   center.classList.remove('hidden');
-
   var grid = document.getElementById('peripheral-grid');
-  var correctIdx = Math.floor(Math.random() * 8);
+  var correctIdx = Math.floor(Math.random()*8);
   for (var i = 0; i < 8; i++) {
     var angle = i * 45 * Math.PI / 180;
     var el = document.createElement('div');
@@ -684,14 +711,13 @@ function playRound() {
     el.style.left = (50 + 38 * Math.cos(angle)) + '%';
     el.style.top  = (50 + 38 * Math.sin(angle)) + '%';
     if (i === correctIdx) { el.innerText = '🛑'; el.id = 'target-sign'; }
-    else { el.innerText = '⭕'; }
+    else el.innerText = '⭕';
     grid.appendChild(el);
   }
-
   if (gameState.tutorialActive) {
     center.classList.add('tutorial-highlight');
     document.getElementById('target-sign').classList.add('tutorial-highlight');
-    updateTutorial('Step 1 of 3', 'Memorize the vehicle and where the 🛑 stop sign is.', true, function() {
+    updateTutorial('Step 1 of 3','Memorize the vehicle in the center and where the 🛑 stop sign is.',true,function(){
       center.classList.remove('tutorial-highlight');
       document.getElementById('target-sign').classList.remove('tutorial-highlight');
       goToVehicleSelect();
@@ -714,34 +740,29 @@ function updateTutorial(title, text, showBtn, callback) {
 // ── VEHICLE SELECT ────────────────────────────────────────────────────────
 function goToVehicleSelect() {
   document.getElementById('center-target').classList.add('hidden');
-  document.querySelectorAll('.sign').forEach(function(d) { d.style.visibility = 'hidden'; });
+  document.querySelectorAll('.sign').forEach(function(d){d.style.visibility='hidden';});
   gameState.currentStep = 'vehicle';
   showOverlay('selection-overlay');
-
   if (gameState.tutorialActive) {
-    var el = document.getElementById('choice-' + gameState.targetVehicle);
+    var el = document.getElementById('choice-'+gameState.targetVehicle);
     if (el) el.classList.add('tutorial-highlight');
-    updateTutorial('Step 2 of 3', 'Tap the vehicle you just saw.', false, null);
+    updateTutorial('Step 2 of 3','Tap the vehicle you just saw.',false,null);
   }
 }
 
 function selectVehicle(choice) {
   if (choice === gameState.targetVehicle) {
-    document.querySelectorAll('.choice').forEach(function(c) { c.classList.remove('tutorial-highlight'); });
+    document.querySelectorAll('.choice').forEach(function(c){c.classList.remove('tutorial-highlight');});
     gameState.currentStep = 'sign';
     showOverlay('none');
-    document.querySelectorAll('.sign').forEach(function(d) {
-      d.style.visibility = 'visible';
-      d.innerText = '❓';
-      d.classList.add('clickable');
+    document.querySelectorAll('.sign').forEach(function(d){
+      d.style.visibility='visible'; d.innerText='❓'; d.classList.add('clickable');
     });
     if (gameState.tutorialActive) {
       document.getElementById('target-sign').classList.add('tutorial-highlight');
-      updateTutorial('Step 3 of 3', 'Tap the ❓ where you saw the stop sign.', false, null);
+      updateTutorial('Step 3 of 3','Tap the ❓ where you saw the stop sign.',false,null);
     }
-  } else {
-    handleLoss();
-  }
+  } else { handleLoss(); }
 }
 
 // ── SIGN CLICK ────────────────────────────────────────────────────────────
@@ -752,36 +773,36 @@ document.getElementById('peripheral-grid').addEventListener('click', function(e)
 
   if (sign.id === 'target-sign') {
     if (gameState.tutorialActive) {
-      confetti({ particleCount: 80, spread: 60, origin: { y: 0.65 } });
+      confetti({particleCount:80,spread:60,origin:{y:0.65}});
       gameState.tutorialActive = false;
       document.getElementById('tutorial-banner').classList.add('hidden');
       sign.classList.remove('tutorial-highlight');
+      unlockBadge('tutorial');
     }
+    consecutiveStreak++;
+    unlockBadge('firstmiss'); // awarded on first completed round either way
+    if (consecutiveStreak >= 5)  unlockBadge('streak5');
+    if (consecutiveStreak >= 10) unlockBadge('streak10');
 
     userData.xp += 1;
-
     if (userData.xp >= XP_MAX) {
       userData.xp = 0;
       userData.level++;
       fireLevelUpConfetti();
-
+      if (userData.level >= 5) unlockBadge('level5');
       if (!taxiUnlocked && userData.level >= 3) {
         taxiUnlocked = true;
         document.getElementById('choice-taxi').classList.remove('hidden');
-        saveProgress();
-        updateXPUI();
+        saveProgress(); updateXPUI();
         var toast = document.createElement('div');
         toast.id = 'taxi-unlock-toast';
         toast.innerHTML = '<div class="toast-emoji">🚕</div><p class="toast-title">New Vehicle Unlocked!</p><p class="toast-body">The Taxi joins the lineup</p>';
         document.getElementById('play-area').appendChild(toast);
-        setTimeout(function() { toast.remove(); startRound(); }, 2400);
+        setTimeout(function(){toast.remove();startRound();},2400);
         return;
       }
     }
-
-    saveProgress();
-    updateXPUI();
-    startRound();
+    saveProgress(); updateXPUI(); startRound();
   } else {
     handleLoss();
   }
@@ -789,21 +810,19 @@ document.getElementById('peripheral-grid').addEventListener('click', function(e)
 
 // ── CONFETTI ──────────────────────────────────────────────────────────────
 function fireLevelUpConfetti() {
-  var count = 200;
-  var base = { origin: { y: 0.7 } };
-  function fire(r, o) { confetti(Object.assign({}, base, o, { particleCount: Math.floor(count * r) })); }
-  fire(0.25, { spread: 26, startVelocity: 55 });
-  fire(0.2,  { spread: 60 });
-  fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-  fire(0.1,  { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-  fire(0.1,  { spread: 120, startVelocity: 45 });
+  var c=200,b={origin:{y:0.7}};
+  function fire(r,o){confetti(Object.assign({},b,o,{particleCount:Math.floor(c*r)}));}
+  fire(0.25,{spread:26,startVelocity:55});fire(0.2,{spread:60});
+  fire(0.35,{spread:100,decay:0.91,scalar:0.8});fire(0.1,{spread:120,startVelocity:25,decay:0.92,scalar:1.2});
+  fire(0.1,{spread:120,startVelocity:45});
 }
 
 // ── LOSS ──────────────────────────────────────────────────────────────────
 function handleLoss() {
+  consecutiveStreak = 0;
+  unlockBadge('firstmiss');
   userData.xp = Math.max(0, userData.xp - 1);
-  saveProgress();
-  updateXPUI();
+  saveProgress(); updateXPUI();
   showOverlay('failure-overlay');
 }
 </script>
