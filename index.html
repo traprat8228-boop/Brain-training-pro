@@ -130,19 +130,11 @@
 
     /* ── GAME ELEMENTS ── */
     #center-target{font-size:80px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.12));transition:transform 0.3s;}
-    #center-target img{filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15)) hue-rotate(190deg) saturate(1.4) brightness(0.95);}
     .sign{position:absolute;width:64px;height:64px;margin-left:-32px;margin-top:-32px;font-size:44px;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;user-select:none;}
-    /* Stop sign → gold */
-    #target-sign img{filter:sepia(1) saturate(4) hue-rotate(5deg) brightness(1.1);}
-    /* Neutral ring → navy blue */
-    .sign:not(#target-sign) img{filter:hue-rotate(190deg) saturate(1.6) brightness(0.85);}
-    /* Question marks → gold */
-    .sign.clickable img{filter:sepia(1) saturate(3.5) hue-rotate(10deg) brightness(1.15);}
     .clickable{cursor:pointer;pointer-events:auto;}
     .clickable:hover{transform:scale(1.15)!important;}
     .choice-container{display:flex;gap:14px;justify-content:center;margin-top:8px;}
     .choice{cursor:pointer;padding:8px 10px;border-radius:14px;background:var(--bg);border:2.5px solid transparent;transition:transform 0.15s,border-color 0.15s,background 0.15s;line-height:1;}
-    .choice img{filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1)) hue-rotate(190deg) saturate(1.4) brightness(0.95);}
     .choice:hover{transform:scale(1.18);background:#e8f0ff;border-color:var(--soft-blue);}
 
     /* ── TAXI TOAST ── */
