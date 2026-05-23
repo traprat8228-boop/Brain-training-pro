@@ -660,6 +660,48 @@ function startRound() {
   playRound();
 }
 
+// ── VEHICLE HUE CONVERGENCE ───────────────────────────────────────────────
+// After level 2, vehicles gradually lose their distinct color differences.
+// By level 20 they're heavily desaturated and similar-looking.
+function getVehicleFilter(vehicle) {
+  if (userData.level <= 2) return ''; // full color up to level 2
+
+  // Progress from 0 (level 2) to 1 (level 20+)
+  var progress = Math.min(1, (userData.level - 2) / 18);
+
+  // Each vehicle gets hue-rotated toward a common midpoint (~30deg)
+  // Car is naturally red/warm, truck is orange/yellow, taxi is yellow
+  // We shift all toward a neutral grey-brown as levels increase
+  var hueShifts = { car: 0, truck: 15, taxi: 30 };
+  var hueShift  = (hueShifts[vehicle] || 0) * (1 - progress);
+
+  // Desaturate progressively (100% sat → 20% sat at max)
+  var saturation = 100 - (progress * 75); // 100% → 25%
+
+  // Slight sepia to unify warm tones
+  var sepia = progress * 0.45;
+
+  return 'hue-rotate(' + hueShift + 'deg) saturate(' + (saturation/100) + ') sepia(' + sepia + ')';
+}
+
+function applyVehicleFilters() {
+  if (userData.level <= 2) {
+    // Clear all filters at low levels
+    ['car','truck','taxi'].forEach(function(v) {
+      var el = document.getElementById('choice-' + v);
+      if (el) { var img = el.querySelector('img'); if (img) img.style.filter = ''; }
+    });
+    return;
+  }
+  ['car','truck','taxi'].forEach(function(v) {
+    var el = document.getElementById('choice-' + v);
+    if (el) {
+      var img = el.querySelector('img');
+      if (img) img.style.filter = getVehicleFilter(v);
+    }
+  });
+}
+
 // ── PLAY ROUND ────────────────────────────────────────────────────────────
 function playRound() {
   gameState.currentStep = 'flash';
@@ -669,8 +711,10 @@ function playRound() {
   var pool = taxiUnlocked ? ['car','truck','taxi'] : ['car','truck'];
   gameState.targetVehicle = pool[Math.floor(Math.random()*pool.length)];
   var center = document.getElementById('center-target');
-  center.innerHTML = '<img src="' + IMGS[gameState.targetVehicle] + '" width="70" height="70" style="display:block">';
+  var vehicleFilter = getVehicleFilter(gameState.targetVehicle);
+  center.innerHTML = '<img src="' + IMGS[gameState.targetVehicle] + '" width="70" height="70" style="display:block;' + (vehicleFilter ? 'filter:' + vehicleFilter : '') + '">';
   center.classList.remove('hidden');
+  applyVehicleFilters();
   var grid = document.getElementById('peripheral-grid');
   var correctIdx = Math.floor(Math.random()*8);
   for (var i = 0; i < 8; i++) {
@@ -715,6 +759,7 @@ function goToVehicleSelect() {
   document.getElementById('center-target').classList.add('hidden');
   document.querySelectorAll('.sign').forEach(function(d){d.style.visibility='hidden';});
   gameState.currentStep = 'vehicle';
+  applyVehicleFilters();
   showOverlay('selection-overlay');
   if (gameState.tutorialActive) {
     var el = document.getElementById('choice-'+gameState.targetVehicle);
