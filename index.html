@@ -460,10 +460,9 @@ function renderBadges() {
     if (unlocked) count++;
     var card = document.createElement('div');
     card.className = 'badge-card ' + (unlocked ? 'unlocked' : 'locked');
-    var iconBg = unlocked ? b.color : '#ccc';
     card.innerHTML =
-      '<div class="badge-icon-wrap" style="background:' + iconBg + '">' +
-        '<span style="font-size:40px;line-height:1;' + (unlocked ? '' : 'filter:grayscale(1) opacity(0.5)') + '">' + b.emoji + '</span>' +
+      '<div class="badge-icon-wrap" style="background:' + (unlocked ? b.color : '#bbb') + '">' +
+        '<img src="' + b.icon + '" width="48" height="48" style="' + (unlocked ? '' : 'filter:grayscale(1) opacity(0.6)') + '" />' +
       '</div>' +
       '<div class="badge-name">' + b.name + '</div>' +
       '<div class="badge-desc">' + b.desc + '</div>';
@@ -486,7 +485,7 @@ function unlockBadge(id) {
 function showNextBadgeNotif() {
   if (newBadgeQueue.length === 0) return;
   var badge = newBadgeQueue[0];
-  document.getElementById('notif-icon-wrap').innerHTML = '<span style="font-size:28px;line-height:1">' + badge.emoji + '</span>';
+  document.getElementById('notif-icon-wrap').innerHTML = '<img src="' + badge.icon + '" width="32" height="32" />';
   document.getElementById('notif-title').innerText = badge.name + ' Unlocked!';
   document.getElementById('notif-body').innerText = badge.desc;
   var notif = document.getElementById('badge-notification');
