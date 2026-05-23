@@ -461,12 +461,11 @@ function renderBadges() {
     var card = document.createElement('div');
     card.className = 'badge-card ' + (unlocked ? 'unlocked' : 'locked');
     var iconBg = unlocked ? b.color : '#bbb';
-    var grayFilter = unlocked ? '' : 'filter:grayscale(1) opacity(0.55);';
-    var iconHtml = b.inlineSvg
-      ? '<div style="width:52px;height:52px;' + grayFilter + '">' + b.inlineSvg + '</div>'
-      : '<img src="' + b.icon + '" width="52" height="52" style="' + grayFilter + '" />';
+    var grayStyle = unlocked ? '' : 'filter:grayscale(1) opacity(0.55);';
     card.innerHTML =
-      '<div class="badge-icon-wrap" style="background:' + iconBg + '">' + iconHtml + '</div>' +
+      '<div class="badge-icon-wrap" style="background:' + iconBg + '">' +
+        '<img src="' + b.icon + '" width="52" height="52" style="' + grayStyle + '" />' +
+      '</div>' +
       '<div class="badge-name">' + b.name + '</div>' +
       '<div class="badge-desc">' + b.desc + '</div>';
     grid.appendChild(card);
@@ -488,9 +487,7 @@ function unlockBadge(id) {
 function showNextBadgeNotif() {
   if (newBadgeQueue.length === 0) return;
   var badge = newBadgeQueue[0];
-  document.getElementById('notif-icon-wrap').innerHTML = badge.inlineSvg
-    ? '<div style="width:32px;height:32px">' + badge.inlineSvg + '</div>'
-    : '<img src="' + badge.icon + '" width="32" height="32" />';
+  document.getElementById('notif-icon-wrap').innerHTML = '<img src="' + badge.icon + '" width="32" height="32" />';
   document.getElementById('notif-title').innerText = badge.name + ' Unlocked!';
   document.getElementById('notif-body').innerText = badge.desc;
   var notif = document.getElementById('badge-notification');
