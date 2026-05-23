@@ -319,9 +319,9 @@
 
   <div id="selection-overlay" class="overlay hidden">
     <div class="choice-container">
-      <div id="choice-car" class="choice" onclick="selectVehicle('car')">🚗</div>
-      <div id="choice-truck" class="choice" onclick="selectVehicle('truck')">🚚</div>
-      <div id="choice-taxi" class="choice hidden" onclick="selectVehicle('taxi')">🚕</div>
+      <div id="choice-car"   class="choice" onclick="selectVehicle('car')"  ><img src="https://emojicdn.elk.sh/🚗?style=twitter"  width="60" height="60"></div>
+      <div id="choice-truck" class="choice" onclick="selectVehicle('truck')" ><img src="https://emojicdn.elk.sh/🚚?style=twitter" width="60" height="60"></div>
+      <div id="choice-taxi"  class="choice hidden" onclick="selectVehicle('taxi')" ><img src="https://emojicdn.elk.sh/🚕?style=twitter"  width="60" height="60"></div>
     </div>
   </div>
 
@@ -350,28 +350,35 @@ async function hashPassword(pw) {
 
 // ── BADGE DEFINITIONS ─────────────────────────────────────────────────────
 var BADGES = [
-  { id:'tutorial',     name:'First Steps',      desc:'Complete the tutorial',                      color:'#4a90d9', icon:'https://img.icons8.com/fluency/96/boots.png' },
-  { id:'level5',       name:'Green Thumb',       desc:'Reach Level 5',                              color:'#27ae60', icon:'https://img.icons8.com/fluency/96/potted-plant.png' },
-  { id:'streak5',      name:'Bird Watcher',      desc:'5 correct in a row',                         color:'#e67e22', icon:'https://img.icons8.com/fluency/96/bird.png' },
+  { id:'tutorial',     name:'First Steps',      desc:'Complete the tutorial',                      color:'#4a90d9', icon:'https://emojicdn.elk.sh/👢?style=twitter' },
+  { id:'level5',       name:'Green Thumb',       desc:'Reach Level 5',                              color:'#27ae60', icon:'https://emojicdn.elk.sh/🌱?style=twitter' },
+  { id:'streak5',      name:'Bird Watcher',      desc:'5 correct in a row',                         color:'#e67e22', icon:'https://emojicdn.elk.sh/🐦?style=twitter' },
   { id:'streak10',     name:'Pickleball Pro',    desc:'10 correct in a row',                        color:'#8e44ad', icon:'https://emojicdn.elk.sh/🏓?style=twitter' },
-  { id:'firstmiss',    name:'Good Sport',        desc:'Play your first round — keep going!',        color:'#f39c12', icon:'https://img.icons8.com/fluency/96/medal.png' },
-  { id:'login3',       name:'Morning Walk',      desc:'Log in 3 days in a row',                     color:'#e67e22', icon:'https://img.icons8.com/fluency/96/walking.png' },
-  { id:'login7',       name:'Weekly Gardener',   desc:'Log in 7 days in a row',                     color:'#27ae60', icon:'https://img.icons8.com/fluency/96/watering-can.png' },
-  { id:'play5min',     name:'Tea Time',          desc:'Play for 5 minutes total',                   color:'#16a085', icon:'https://img.icons8.com/fluency/96/tea.png' },
-  { id:'play10min',    name:'Book Club',         desc:'Play for 10 minutes total',                  color:'#2471a3', icon:'https://img.icons8.com/fluency/96/books.png' },
-  { id:'level10',      name:'Fishing Hole',      desc:'Reach Level 10',                             color:'#1a6ea8', icon:'https://img.icons8.com/fluency/96/fish.png' },
+  { id:'firstmiss',    name:'Good Sport',        desc:'Play your first round — keep going!',        color:'#f39c12', icon:'https://emojicdn.elk.sh/🏅?style=twitter' },
+  { id:'login3',       name:'Morning Walk',      desc:'Log in 3 days in a row',                     color:'#e67e22', icon:'https://emojicdn.elk.sh/🚶?style=twitter' },
+  { id:'login7',       name:'Weekly Gardener',   desc:'Log in 7 days in a row',                     color:'#27ae60', icon:'https://emojicdn.elk.sh/🪣?style=twitter' },
+  { id:'play5min',     name:'Tea Time',          desc:'Play for 5 minutes total',                   color:'#16a085', icon:'https://emojicdn.elk.sh/☕?style=twitter' },
+  { id:'play10min',    name:'Book Club',         desc:'Play for 10 minutes total',                  color:'#2471a3', icon:'https://emojicdn.elk.sh/📚?style=twitter' },
+  { id:'level10',      name:'Fishing Hole',      desc:'Reach Level 10',                             color:'#1a6ea8', icon:'https://emojicdn.elk.sh/🐟?style=twitter' },
   { id:'level15',      name:'Chess Master',      desc:'Reach Level 15',                             color:'#5b2d8e', icon:'https://emojicdn.elk.sh/♟️?style=twitter' },
   { id:'level25',      name:'Hiking Trail',      desc:'Reach Level 25',                             color:'#d35400', icon:'https://emojicdn.elk.sh/🥾?style=twitter' },
-  { id:'level50',      name:'Golden Years',      desc:'Reach Level 50 — true legend!',              color:'#d4ac0d', icon:'https://img.icons8.com/fluency/96/star.png' },
+  { id:'level50',      name:'Golden Years',      desc:'Reach Level 50 — true legend!',              color:'#d4ac0d', icon:'https://emojicdn.elk.sh/⭐?style=twitter' },
   { id:'streak20',     name:'Knitting Circle',   desc:'20 correct in a row',                        color:'#c0392b', icon:'https://emojicdn.elk.sh/🧶?style=twitter' },
-  { id:'speed1',       name:'Quick Reflexes',    desc:'Answer correctly within 1 second',           color:'#00a878', icon:'https://img.icons8.com/fluency/96/stopwatch.png' },
-  { id:'speed5',       name:'Lightning Mind',    desc:'Answer within 1 second 5 times',             color:'#d4ac0d', icon:'https://img.icons8.com/fluency/96/lightning-bolt.png' },
-  { id:'play30min',    name:'Afternoon Stroll',  desc:'Play for 30 minutes total',                  color:'#1e8449', icon:'https://img.icons8.com/fluency/96/sun.png' },
+  { id:'speed1',       name:'Quick Reflexes',    desc:'Answer correctly within 1 second',           color:'#00a878', icon:'https://emojicdn.elk.sh/⏱️?style=twitter' },
+  { id:'speed5',       name:'Lightning Mind',    desc:'Answer within 1 second 5 times',             color:'#d4ac0d', icon:'https://emojicdn.elk.sh/⚡?style=twitter' },
+  { id:'play30min',    name:'Afternoon Stroll',  desc:'Play for 30 minutes total',                  color:'#1e8449', icon:'https://emojicdn.elk.sh/🌅?style=twitter' },
   { id:'perfectlevel', name:'Sunday Crossword',  desc:'Complete a full level without any mistakes', color:'#1a5276', icon:'https://emojicdn.elk.sh/📰?style=twitter' }
 ];
 
 // ── STATE ─────────────────────────────────────────────────────────────────
-var EMOJIS = {car:'🚗',truck:'🚚',taxi:'🚕'};
+var IMGS = {
+  car:   'https://emojicdn.elk.sh/🚗?style=twitter',
+  truck: 'https://emojicdn.elk.sh/🚚?style=twitter',
+  taxi:  'https://emojicdn.elk.sh/🚕?style=twitter',
+  stop:  'https://emojicdn.elk.sh/🛑?style=twitter',
+  ring:  'https://emojicdn.elk.sh/⭕?style=twitter',
+  ask:   'https://emojicdn.elk.sh/❓?style=twitter'
+};
 var XP_MAX = 5;
 var userData  = {name:'Guest Player',level:1,xp:0};
 var gameState = {targetVehicle:'car',currentStep:'none',tutorialActive:false};
@@ -656,7 +663,7 @@ function playRound() {
   var pool = taxiUnlocked ? ['car','truck','taxi'] : ['car','truck'];
   gameState.targetVehicle = pool[Math.floor(Math.random()*pool.length)];
   var center = document.getElementById('center-target');
-  center.innerHTML = EMOJIS[gameState.targetVehicle];
+  center.innerHTML = '<img src="' + IMGS[gameState.targetVehicle] + '" width="70" height="70" style="display:block">';
   center.classList.remove('hidden');
   var grid = document.getElementById('peripheral-grid');
   var correctIdx = Math.floor(Math.random()*8);
@@ -666,14 +673,18 @@ function playRound() {
     el.className = 'sign';
     el.style.left = (50 + 38 * Math.cos(angle)) + '%';
     el.style.top  = (50 + 38 * Math.sin(angle)) + '%';
-    if (i === correctIdx) { el.innerText = '🛑'; el.id = 'target-sign'; }
-    else el.innerText = '⭕';
+    if (i === correctIdx) {
+      el.innerHTML = '<img src="' + IMGS.stop + '" width="44" height="44">';
+      el.id = 'target-sign';
+    } else {
+      el.innerHTML = '<img src="' + IMGS.ring + '" width="44" height="44">';
+    }
     grid.appendChild(el);
   }
   if (gameState.tutorialActive) {
     center.classList.add('tutorial-highlight');
     document.getElementById('target-sign').classList.add('tutorial-highlight');
-    updateTutorial('Step 1 of 3','Memorize the vehicle in the center and where the 🛑 stop sign is.',true,function(){
+    updateTutorial('Step 1 of 3','Memorize the vehicle in the center and where the stop sign is.',true,function(){
       center.classList.remove('tutorial-highlight');
       document.getElementById('target-sign').classList.remove('tutorial-highlight');
       goToVehicleSelect();
@@ -713,11 +724,13 @@ function selectVehicle(choice) {
     showOverlay('none');
     roundStartTime = Date.now();
     document.querySelectorAll('.sign').forEach(function(d){
-      d.style.visibility='visible'; d.innerText='❓'; d.classList.add('clickable');
+      d.style.visibility='visible';
+      d.innerHTML='<img src="' + IMGS.ask + '" width="44" height="44">';
+      d.classList.add('clickable');
     });
     if (gameState.tutorialActive) {
       document.getElementById('target-sign').classList.add('tutorial-highlight');
-      updateTutorial('Step 3 of 3','Tap the ❓ where you saw the stop sign.',false,null);
+      updateTutorial('Step 3 of 3','Tap the question mark where you saw the stop sign.',false,null);
     }
   } else { handleLoss(); }
 }
