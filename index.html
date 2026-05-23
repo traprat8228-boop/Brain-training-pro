@@ -351,134 +351,34 @@ async function hashPassword(pw) {
 }
 
 // ── BADGE DEFINITIONS ─────────────────────────────────────────────────────
+function makeBadgeSVG(bg, emoji) {
+  return '<svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="' + bg + '" stroke="#fff" stroke-width="3"/><text x="36" y="47" text-anchor="middle" font-size="34">' + emoji + '</text></svg>';
+}
+
 var BADGES = [
-  {
-    id:'tutorial',
-    name:'First Steps',
-    desc:'Complete the tutorial',
-    bg:'#ddeeff',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#4a90d9" stroke="#fff" stroke-width="3"/><!-- sole --><rect x="11" y="55" width="50" height="6" rx="3" fill="#a07840" stroke="#fff" stroke-width="1.5"/><!-- heel block --><rect x="11" y="49" width="14" height="8" rx="2" fill="#c49050" stroke="#fff" stroke-width="1.5"/><!-- main boot body --><path d="M25 49 L25 28 Q25 18 32 17 L38 17 Q42 17 43 20 L44 26 Q50 27 55 32 Q59 37 59 44 L59 49 Z" fill="#e8c080" stroke="#fff" stroke-width="2"/><!-- ankle collar --><path d="M25 28 Q24 20 32 17 L38 17" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/><!-- tongue flap --><rect x="25" y="22" width="8" height="12" rx="2" fill="#d4a96a" stroke="#fff" stroke-width="1.5"/><!-- toe cap curve --><path d="M44 26 Q58 26 59 38" stroke="#c49050" stroke-width="2" stroke-linecap="round" fill="none"/><!-- lace holes --><circle cx="36" cy="24" r="1.5" fill="#a07840"/><circle cx="36" cy="28" r="1.5" fill="#a07840"/><circle cx="36" cy="32" r="1.5" fill="#a07840"/><!-- sole tread --><line x1="18" y1="61" x2="18" y2="55" stroke="#fff" stroke-width="1.2" opacity="0.5"/><line x1="24" y1="61" x2="24" y2="55" stroke="#fff" stroke-width="1.2" opacity="0.5"/><line x1="30" y1="61" x2="30" y2="55" stroke="#fff" stroke-width="1.2" opacity="0.5"/><line x1="36" y1="61" x2="36" y2="55" stroke="#fff" stroke-width="1.2" opacity="0.5"/><line x1="42" y1="61" x2="42" y2="55" stroke="#fff" stroke-width="1.2" opacity="0.5"/><line x1="48" y1="61" x2="48" y2="55" stroke="#fff" stroke-width="1.2" opacity="0.5"/><line x1="54" y1="61" x2="54" y2="55" stroke="#fff" stroke-width="1.2" opacity="0.5"/></svg>'
-  },
-  {
-    id:'level5',
-    name:'Green Thumb',
-    desc:'Reach Level 5',
-    bg:'#d4f5e2',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#27ae60" stroke="#fff" stroke-width="3"/><path d="M36 54V36" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M36 42c0 0-10-4-10-14 0 0 10 2 10 14z" fill="#58d68d"/><path d="M36 36c0 0 10-4 10-14 0 0-10 2-10 14z" fill="#a9dfbf"/><ellipse cx="36" cy="24" rx="5" ry="7" fill="#58d68d" stroke="#fff" stroke-width="2"/><path d="M36 54c0 0-8 0-8-2s16-2 16 0-8 2-8 2z" fill="#1e8449" opacity="0.5"/></svg>'
-  },
-  {
-    id:'streak5',
-    name:'Bird Watcher',
-    desc:'5 correct in a row',
-    bg:'#ffeedd',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#e67e22" stroke="#fff" stroke-width="3"/><ellipse cx="33" cy="40" rx="12" ry="9" fill="#f5cba7"/><circle cx="33" cy="28" r="9" fill="#cb4335"/><circle cx="36" cy="27" r="3" fill="#111"/><circle cx="37" cy="26" r="1.2" fill="#fff"/><polygon points="33,34 30,37 36,37" fill="#f39c12"/><path d="M21 36c0 0-5 2-5 6s5 5 9 4" fill="#f5cba7" stroke="#fff" stroke-width="1.5"/><path d="M45 36c0 0 5 2 5 5" stroke="#f5cba7" stroke-width="6" stroke-linecap="round"/><path d="M27 49l-3 7" stroke="#cb6d30" stroke-width="2.5" stroke-linecap="round"/><path d="M39 49l3 7" stroke="#cb6d30" stroke-width="2.5" stroke-linecap="round"/></svg>'
-  },
-  {
-    id:'streak10',
-    name:'Pickleball Pro',
-    desc:'10 correct in a row',
-    bg:'#ede0ff',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#8e44ad" stroke="#fff" stroke-width="3"/><rect x="42" y="42" width="10" height="22" rx="5" fill="#d7bde2" stroke="#fff" stroke-width="2" transform="rotate(-40 42 42)"/><circle cx="30" cy="32" r="15" fill="#e8daef" stroke="#fff" stroke-width="3"/><circle cx="30" cy="32" r="11" fill="#f5f0ff"/><circle cx="24" cy="26" r="2.5" fill="#8e44ad" opacity="0.4"/><circle cx="36" cy="26" r="2.5" fill="#8e44ad" opacity="0.4"/><circle cx="24" cy="38" r="2.5" fill="#8e44ad" opacity="0.4"/><circle cx="36" cy="38" r="2.5" fill="#8e44ad" opacity="0.4"/><circle cx="30" cy="32" r="2.5" fill="#8e44ad" opacity="0.4"/><circle cx="30" cy="26" r="2.5" fill="#8e44ad" opacity="0.4"/><circle cx="30" cy="38" r="2.5" fill="#8e44ad" opacity="0.4"/><circle cx="24" cy="32" r="2.5" fill="#8e44ad" opacity="0.4"/><circle cx="36" cy="32" r="2.5" fill="#8e44ad" opacity="0.4"/></svg>'
-  },
-  {
-    id:'firstmiss',
-    name:'Good Sport',
-    desc:'Play your first round — keep going!',
-    bg:'#fff3d4',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#f39c12" stroke="#fff" stroke-width="3"/><circle cx="36" cy="37" r="18" fill="#fdebd0" stroke="#fff" stroke-width="2.5"/><circle cx="28" cy="32" r="3" fill="#1a1a2e"/><circle cx="29.2" cy="31" r="1.2" fill="#fff"/><circle cx="44" cy="32" r="3" fill="#1a1a2e"/><circle cx="45.2" cy="31" r="1.2" fill="#fff"/><path d="M28 43c2 3 5 4 8 4s6-1 8-4" stroke="#e67e22" stroke-width="2.5" stroke-linecap="round"/><path d="M46 28c3-2 6 0 6 3" stroke="#e67e22" stroke-width="2" stroke-linecap="round"/><path d="M49 24l4-3" stroke="#ffe066" stroke-width="2" stroke-linecap="round"/><path d="M53 29l4 0" stroke="#ffe066" stroke-width="2" stroke-linecap="round"/><path d="M51 22l2-2" stroke="#ffe066" stroke-width="2" stroke-linecap="round"/><circle cx="33" cy="44" r="2" fill="#e67e22" opacity="0.4"/></svg>'
-  },
-  {
-    id:'login3',
-    name:'Morning Walk',
-    desc:'Log in 3 days in a row',
-    bg:'#fff8da',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#e67e22" stroke="#fff" stroke-width="3"/><circle cx="38" cy="18" r="6" fill="#fdebd0" stroke="#fff" stroke-width="2"/><path d="M38 24l-2 10" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M36 34l-8 8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M36 34l6 8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M30 42l-4 12" stroke="#fdebd0" stroke-width="2.5" stroke-linecap="round"/><path d="M42 42l4 12" stroke="#fdebd0" stroke-width="2.5" stroke-linecap="round"/><path d="M16 38c5-1 8 2 10 5" stroke="#ffe066" stroke-width="2" stroke-linecap="round"/><circle cx="18" cy="22" r="5" fill="#ffe066" stroke="#f5c518" stroke-width="1.5"/><path d="M18 15v3M18 24v3M11 22h3M22 22h3M13 17l2 2M21 25l2 2M13 27l2-2M21 19l2-2" stroke="#f5c518" stroke-width="1.5" stroke-linecap="round"/></svg>'
-  },
-  {
-    id:'login7',
-    name:'Weekly Gardener',
-    desc:'Log in 7 days in a row',
-    bg:'#d8f8e8',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#27ae60" stroke="#fff" stroke-width="3"/><path d="M24 52c0 0 0-16 12-22" stroke="#1a5e34" stroke-width="3" stroke-linecap="round"/><path d="M48 52c0 0 0-16-12-22" stroke="#1a5e34" stroke-width="2" stroke-linecap="round" opacity="0.4"/><path d="M20 26c0-6 6-10 14-8 0 6-6 10-14 8z" fill="#58d68d" stroke="#fff" stroke-width="1.5"/><path d="M52 28c0-6-6-10-14-8 0 6 6 10 14 8z" fill="#a9dfbf" stroke="#fff" stroke-width="1.5"/><path d="M28 22h16" stroke="#1a5e34" stroke-width="2" stroke-linecap="round" opacity="0.4"/><rect x="22" y="48" width="28" height="7" rx="3.5" fill="#1a5e34" stroke="#fff" stroke-width="2"/><path d="M30 42c0-4 3-8 6-8s6 4 6 8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M26 48c4-10 16-10 20 0" stroke="#58d68d" stroke-width="2" stroke-linecap="round"/></svg>'
-  },
-  {
-    id:'play5min',
-    name:'Tea Time',
-    desc:'Play for 5 minutes total',
-    bg:'#d4f5ef',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#16a085" stroke="#fff" stroke-width="3"/><rect x="18" y="34" width="28" height="18" rx="6" fill="#a2d9ce" stroke="#fff" stroke-width="2.5"/><path d="M46 40h4a5 5 0 010 10h-4" stroke="#0e6655" stroke-width="3" stroke-linecap="round"/><ellipse cx="32" cy="56" rx="12" ry="3.5" fill="#0e6655" opacity="0.3"/><path d="M27 30c1-4 3-4 3-7" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M34 30c1-3 3-3 3-6" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M18 56h28" stroke="#0e6655" stroke-width="3" stroke-linecap="round"/></svg>'
-  },
-  {
-    id:'play10min',
-    name:'Book Club',
-    desc:'Play for 10 minutes total',
-    bg:'#d4e8ff',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#2471a3" stroke="#fff" stroke-width="3"/><rect x="16" y="20" width="18" height="30" rx="3" fill="#aed6f1" stroke="#fff" stroke-width="2.5"/><rect x="38" y="20" width="18" height="30" rx="3" fill="#5dade2" stroke="#fff" stroke-width="2.5"/><path d="M20 28h10M20 34h10M20 40h6" stroke="#2471a3" stroke-width="2" stroke-linecap="round"/><path d="M42 28h10M42 34h10M42 40h6" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.7"/><path d="M34 50l2 4 2-4" fill="#1a5e8a" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>'
-  },
-  {
-    id:'level10',
-    name:'Fishing Hole',
-    desc:'Reach Level 10',
-    bg:'#d4eeff',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#1a6ea8" stroke="#fff" stroke-width="3"/><path d="M16 50c6-4 14-4 20-1s14 3 20-1" stroke="#aed6f1" stroke-width="2.5" stroke-linecap="round"/><path d="M12 56c7-4 16-4 24-1s17 3 24-1" stroke="#aed6f1" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/><ellipse cx="36" cy="36" rx="11" ry="7" fill="#f0d9a0" stroke="#fff" stroke-width="2.5"/><circle cx="31" cy="34" r="2.5" fill="#1a6ea8" opacity="0.6"/><path d="M40 32c2-1 3 0 3 2s-1 3-3 3" stroke="#e74c3c" stroke-width="2" stroke-linecap="round"/><path d="M43 30c3-1 5 1 5 4" stroke="#e74c3c" stroke-width="1.5" stroke-linecap="round"/><path d="M43 26v-10" stroke="#f5e6c8" stroke-width="2.5" stroke-linecap="round"/><path d="M39 16c2 0 4-3 4-3s2 3-4 5" fill="#27ae60" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>'
-  },
-  {
-    id:'level15',
-    name:'Chess Master',
-    desc:'Reach Level 15',
-    bg:'#ede0ff',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#5b2d8e" stroke="#fff" stroke-width="3"/><rect x="24" y="54" width="24" height="5" rx="2.5" fill="#d7bde2" stroke="#fff" stroke-width="2"/><rect x="26" y="50" width="20" height="5" rx="2" fill="#b07fd4" stroke="#fff" stroke-width="1.5"/><rect x="30" y="38" width="12" height="13" rx="2" fill="#d7bde2" stroke="#fff" stroke-width="2"/><path d="M28 38c0-6 3-12 8-12s8 6 8 12" fill="#e8daef" stroke="#fff" stroke-width="2"/><circle cx="36" cy="22" r="6" fill="#e8daef" stroke="#fff" stroke-width="2"/><circle cx="36" cy="22" r="3" fill="#5b2d8e"/><path d="M31 16l-3-3M41 16l3-3" stroke="#ffe066" stroke-width="2" stroke-linecap="round"/><path d="M36 15v-4" stroke="#ffe066" stroke-width="2" stroke-linecap="round"/></svg>'
-  },
-  {
-    id:'level25',
-    name:'Hiking Trail',
-    desc:'Reach Level 25',
-    bg:'#ffeedd',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#d35400" stroke="#fff" stroke-width="3"/><path d="M10 55l16-22 10 13 10-18 16 27H10z" fill="#f0b27a" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><path d="M10 55l16-22 10 13 10-18 16 27H10z" fill="#d35400" opacity="0.35"/><circle cx="54" cy="18" r="7" fill="#ffe066" stroke="#f5c518" stroke-width="2"/><path d="M54 9v3M54 24v3M45 18h3M60 18h3M47.9 11.9l2.1 2.1M57.9 21.9l2.1 2.1M47.9 24.1l2.1-2.1M57.9 14.1l2.1-2.1" stroke="#f5c518" stroke-width="1.8" stroke-linecap="round"/></svg>'
-  },
-  {
-    id:'level50',
-    name:'Golden Years',
-    desc:'Reach Level 50 — true legend!',
-    bg:'#fff8cc',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#f5c518" stroke="#fff" stroke-width="3"/><path d="M36 14l5.5 11.2 12.4 1.8-9 8.7 2.1 12.3L36 42.2l-11 5.8 2.1-12.3-9-8.7 12.4-1.8z" fill="#fff" stroke="#f5c518" stroke-width="2" stroke-linejoin="round"/><path d="M36 20l3.8 7.7 8.5 1.2-6.2 6 1.5 8.5L36 39.7l-7.6 4 1.5-8.5-6.2-6 8.5-1.2z" fill="#ffe066"/></svg>'
-  },
-  {
-    id:'streak20',
-    name:'Knitting Circle',
-    desc:'20 correct in a row',
-    bg:'#ffe0f0',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#c0392b" stroke="#fff" stroke-width="3"/><circle cx="34" cy="38" rx="14" ry="14" r="14" fill="#f1948a" stroke="#fff" stroke-width="2.5"/><path d="M22 34c2-6 8-10 14-8" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M22 40c2 4 8 7 14 5" stroke="#c0392b" stroke-width="2" stroke-linecap="round"/><path d="M38 28c4 2 6 6 6 12" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.6"/><path d="M20 37c0 6 4 12 14 13" stroke="#c0392b" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><line x1="46" y1="24" x2="38" y2="32" stroke="#fff" stroke-width="3" stroke-linecap="round"/><line x1="52" y1="20" x2="44" y2="28" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M44 20l8 4-4 8" stroke="#e8daef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-  },
-  {
-    id:'speed1',
-    name:'Quick Reflexes',
-    desc:'Answer correctly within 1 second',
-    bg:'#ccfaed',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#00a878" stroke="#fff" stroke-width="3"/><circle cx="36" cy="38" r="18" fill="none" stroke="#fff" stroke-width="3"/><circle cx="36" cy="38" r="14" fill="none" stroke="#a2dfc9" stroke-width="2"/><path d="M36 24v14l9 6" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 14h14" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M36 14v4" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M52 22l-3 3" stroke="#ffe066" stroke-width="2.5" stroke-linecap="round"/><path d="M20 22l3 3" stroke="#ffe066" stroke-width="2.5" stroke-linecap="round"/></svg>'
-  },
-  {
-    id:'speed5',
-    name:'Lightning Mind',
-    desc:'Answer within 1 second 5 times',
-    bg:'#fff3cc',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#d4ac0d" stroke="#fff" stroke-width="3"/><path d="M43 14L27 38h14L25 58l26-30H37L43 14z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M43 14L27 38h14L25 58l26-30H37z" fill="#ffe066"/><circle cx="16" cy="26" r="3" fill="#fff" opacity="0.5"/><circle cx="56" cy="22" r="2.5" fill="#fff" opacity="0.5"/><circle cx="14" cy="48" r="2" fill="#fff" opacity="0.4"/><circle cx="58" cy="50" r="3" fill="#fff" opacity="0.4"/></svg>'
-  },
-  {
-    id:'play30min',
-    name:'Afternoon Stroll',
-    desc:'Play for 30 minutes total',
-    bg:'#d4f5e2',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#1e8449" stroke="#fff" stroke-width="3"/><circle cx="42" cy="16" r="6" fill="#a9dfbf" stroke="#fff" stroke-width="2.5"/><path d="M42 22l-3 10" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M39 32l-10 8" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M39 32l8 8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M29 40l-6 16" stroke="#a9dfbf" stroke-width="3" stroke-linecap="round"/><path d="M47 40l6 16" stroke="#a9dfbf" stroke-width="3" stroke-linecap="round"/><circle cx="20" cy="28" r="6" fill="#ffe066" stroke="#f5c518" stroke-width="2"/><path d="M20 20v2M20 34v2M12 28h2M26 28h2M14.3 22.3l1.4 1.4M24.3 32.3l1.4 1.4M14.3 33.7l1.4-1.4M24.3 23.7l1.4-1.4" stroke="#f5c518" stroke-width="1.5" stroke-linecap="round"/></svg>'
-  },
-  {
-    id:'perfectlevel',
-    name:'Sunday Crossword',
-    desc:'Complete a full level without any mistakes',
-    bg:'#d4e8ff',
-    svg:'<svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="#1a5276" stroke="#fff" stroke-width="3"/><rect x="16" y="16" width="40" height="40" rx="5" fill="#aed6f1" stroke="#fff" stroke-width="2.5"/><rect x="20" y="20" width="10" height="10" rx="1.5" fill="#1a5276"/><rect x="31" y="20" width="10" height="10" rx="1.5" fill="#fff"/><rect x="42" y="20" width="10" height="10" rx="1.5" fill="#1a5276"/><rect x="20" y="31" width="10" height="10" rx="1.5" fill="#fff"/><rect x="31" y="31" width="10" height="10" rx="1.5" fill="#1a5276"/><rect x="42" y="31" width="10" height="10" rx="1.5" fill="#fff"/><rect x="20" y="42" width="10" height="10" rx="1.5" fill="#1a5276"/><rect x="31" y="42" width="10" height="10" rx="1.5" fill="#fff"/><rect x="42" y="42" width="10" height="10" rx="1.5" fill="#1a5276"/><path d="M26 36l4 4 10-10" stroke="#ffe066" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-  }
-];
+  { id:'tutorial',     name:'First Steps',      desc:'Complete the tutorial',                      color:'#4a90d9', emoji:'👢' },
+  { id:'level5',       name:'Green Thumb',       desc:'Reach Level 5',                              color:'#27ae60', emoji:'🌱' },
+  { id:'streak5',      name:'Bird Watcher',      desc:'5 correct in a row',                         color:'#e67e22', emoji:'🐦' },
+  { id:'streak10',     name:'Pickleball Pro',    desc:'10 correct in a row',                        color:'#8e44ad', emoji:'🏓' },
+  { id:'firstmiss',    name:'Good Sport',        desc:'Play your first round — keep going!',        color:'#f39c12', emoji:'😄' },
+  { id:'login3',       name:'Morning Walk',      desc:'Log in 3 days in a row',                     color:'#e67e22', emoji:'🚶' },
+  { id:'login7',       name:'Weekly Gardener',   desc:'Log in 7 days in a row',                     color:'#27ae60', emoji:'🪣' },
+  { id:'play5min',     name:'Tea Time',          desc:'Play for 5 minutes total',                   color:'#16a085', emoji:'☕' },
+  { id:'play10min',    name:'Book Club',         desc:'Play for 10 minutes total',                  color:'#2471a3', emoji:'📚' },
+  { id:'level10',      name:'Fishing Hole',      desc:'Reach Level 10',                             color:'#1a6ea8', emoji:'🐟' },
+  { id:'level15',      name:'Chess Master',      desc:'Reach Level 15',                             color:'#5b2d8e', emoji:'♟️' },
+  { id:'level25',      name:'Hiking Trail',      desc:'Reach Level 25',                             color:'#d35400', emoji:'🥾' },
+  { id:'level50',      name:'Golden Years',      desc:'Reach Level 50 — true legend!',              color:'#d4ac0d', emoji:'⭐' },
+  { id:'streak20',     name:'Knitting Circle',   desc:'20 correct in a row',                        color:'#c0392b', emoji:'🧶' },
+  { id:'speed1',       name:'Quick Reflexes',    desc:'Answer correctly within 1 second',           color:'#00a878', emoji:'⏱️' },
+  { id:'speed5',       name:'Lightning Mind',    desc:'Answer within 1 second 5 times',             color:'#d4ac0d', emoji:'⚡' },
+  { id:'play30min',    name:'Afternoon Stroll',  desc:'Play for 30 minutes total',                  color:'#1e8449', emoji:'🌅' },
+  { id:'perfectlevel', name:'Sunday Crossword',  desc:'Complete a full level without any mistakes', color:'#1a5276', emoji:'✏️' }
+].map(function(b) {
+  b.bg = b.color + '22';
+  b.svg = makeBadgeSVG(b.color, b.emoji);
+  return b;
+});
 
 // ── STATE ─────────────────────────────────────────────────────────────────
 var EMOJIS = {car:'🚗',truck:'🚚',taxi:'🚕'};
@@ -570,8 +470,11 @@ function renderBadges() {
     if (unlocked) count++;
     var card = document.createElement('div');
     card.className = 'badge-card ' + (unlocked ? 'unlocked' : 'locked');
+    var iconBg = unlocked ? b.color : '#ccc';
     card.innerHTML =
-      '<div class="badge-icon-wrap" style="background:' + (unlocked ? b.bg : '#f0f4fb') + '">' + b.svg + '</div>' +
+      '<div class="badge-icon-wrap" style="background:' + iconBg + '">' +
+        '<span style="font-size:40px;line-height:1;' + (unlocked ? '' : 'filter:grayscale(1) opacity(0.5)') + '">' + b.emoji + '</span>' +
+      '</div>' +
       '<div class="badge-name">' + b.name + '</div>' +
       '<div class="badge-desc">' + b.desc + '</div>';
     grid.appendChild(card);
@@ -593,7 +496,7 @@ function unlockBadge(id) {
 function showNextBadgeNotif() {
   if (newBadgeQueue.length === 0) return;
   var badge = newBadgeQueue[0];
-  document.getElementById('notif-icon-wrap').innerHTML = badge.svg;
+  document.getElementById('notif-icon-wrap').innerHTML = '<span style="font-size:28px;line-height:1">' + badge.emoji + '</span>';
   document.getElementById('notif-title').innerText = badge.name + ' Unlocked!';
   document.getElementById('notif-body').innerText = badge.desc;
   var notif = document.getElementById('badge-notification');
