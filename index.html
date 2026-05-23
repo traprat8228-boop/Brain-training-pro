@@ -69,9 +69,7 @@
     .badge-card.unlocked{background:var(--warm);border-color:#f5c518;box-shadow:0 4px 16px rgba(245,197,24,0.18);}
     .badge-card.locked{opacity:0.55;}
     .badge-icon-wrap{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative;}
-    .badge-icon-wrap svg{width:72px;height:72px;}
     .badge-card.locked .badge-icon-wrap::after{content:'🔒';position:absolute;bottom:0px;right:0px;font-size:18px;background:#fff;border-radius:50%;padding:2px;line-height:1;}
-    .badge-card.locked .badge-icon-wrap svg{filter:grayscale(1) opacity(0.5);}
     .badge-name{font-size:0.88rem;font-weight:900;color:var(--navy);line-height:1.2;margin-bottom:4px;}
     .badge-desc{font-size:0.72rem;color:var(--muted);font-weight:600;line-height:1.4;}
     .badge-card.unlocked .badge-name{color:#7a5500;}
@@ -351,34 +349,26 @@ async function hashPassword(pw) {
 }
 
 // ── BADGE DEFINITIONS ─────────────────────────────────────────────────────
-function makeBadgeSVG(bg, emoji) {
-  return '<svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg"><circle cx="36" cy="36" r="34" fill="' + bg + '" stroke="#fff" stroke-width="3"/><text x="36" y="47" text-anchor="middle" font-size="34">' + emoji + '</text></svg>';
-}
-
 var BADGES = [
-  { id:'tutorial',     name:'First Steps',      desc:'Complete the tutorial',                      color:'#4a90d9', emoji:'👢' },
-  { id:'level5',       name:'Green Thumb',       desc:'Reach Level 5',                              color:'#27ae60', emoji:'🌱' },
-  { id:'streak5',      name:'Bird Watcher',      desc:'5 correct in a row',                         color:'#e67e22', emoji:'🐦' },
-  { id:'streak10',     name:'Pickleball Pro',    desc:'10 correct in a row',                        color:'#8e44ad', emoji:'🏓' },
-  { id:'firstmiss',    name:'Good Sport',        desc:'Play your first round — keep going!',        color:'#f39c12', emoji:'😄' },
-  { id:'login3',       name:'Morning Walk',      desc:'Log in 3 days in a row',                     color:'#e67e22', emoji:'🚶' },
-  { id:'login7',       name:'Weekly Gardener',   desc:'Log in 7 days in a row',                     color:'#27ae60', emoji:'🪣' },
-  { id:'play5min',     name:'Tea Time',          desc:'Play for 5 minutes total',                   color:'#16a085', emoji:'☕' },
-  { id:'play10min',    name:'Book Club',         desc:'Play for 10 minutes total',                  color:'#2471a3', emoji:'📚' },
-  { id:'level10',      name:'Fishing Hole',      desc:'Reach Level 10',                             color:'#1a6ea8', emoji:'🐟' },
-  { id:'level15',      name:'Chess Master',      desc:'Reach Level 15',                             color:'#5b2d8e', emoji:'♟️' },
-  { id:'level25',      name:'Hiking Trail',      desc:'Reach Level 25',                             color:'#d35400', emoji:'🥾' },
-  { id:'level50',      name:'Golden Years',      desc:'Reach Level 50 — true legend!',              color:'#d4ac0d', emoji:'⭐' },
-  { id:'streak20',     name:'Knitting Circle',   desc:'20 correct in a row',                        color:'#c0392b', emoji:'🧶' },
-  { id:'speed1',       name:'Quick Reflexes',    desc:'Answer correctly within 1 second',           color:'#00a878', emoji:'⏱️' },
-  { id:'speed5',       name:'Lightning Mind',    desc:'Answer within 1 second 5 times',             color:'#d4ac0d', emoji:'⚡' },
-  { id:'play30min',    name:'Afternoon Stroll',  desc:'Play for 30 minutes total',                  color:'#1e8449', emoji:'🌅' },
-  { id:'perfectlevel', name:'Sunday Crossword',  desc:'Complete a full level without any mistakes', color:'#1a5276', emoji:'✏️' }
-].map(function(b) {
-  b.bg = b.color + '22';
-  b.svg = makeBadgeSVG(b.color, b.emoji);
-  return b;
-});
+  { id:'tutorial',     name:'First Steps',      desc:'Complete the tutorial',                      color:'#4a90d9', icon:'https://img.icons8.com/fluency/96/boots.png' },
+  { id:'level5',       name:'Green Thumb',       desc:'Reach Level 5',                              color:'#27ae60', icon:'https://img.icons8.com/fluency/96/potted-plant.png' },
+  { id:'streak5',      name:'Bird Watcher',      desc:'5 correct in a row',                         color:'#e67e22', icon:'https://img.icons8.com/fluency/96/bird.png' },
+  { id:'streak10',     name:'Pickleball Pro',    desc:'10 correct in a row',                        color:'#8e44ad', icon:'https://img.icons8.com/fluency/96/tennis.png' },
+  { id:'firstmiss',    name:'Good Sport',        desc:'Play your first round — keep going!',        color:'#f39c12', icon:'https://img.icons8.com/fluency/96/medal.png' },
+  { id:'login3',       name:'Morning Walk',      desc:'Log in 3 days in a row',                     color:'#e67e22', icon:'https://img.icons8.com/fluency/96/walking.png' },
+  { id:'login7',       name:'Weekly Gardener',   desc:'Log in 7 days in a row',                     color:'#27ae60', icon:'https://img.icons8.com/fluency/96/watering-can.png' },
+  { id:'play5min',     name:'Tea Time',          desc:'Play for 5 minutes total',                   color:'#16a085', icon:'https://img.icons8.com/fluency/96/tea.png' },
+  { id:'play10min',    name:'Book Club',         desc:'Play for 10 minutes total',                  color:'#2471a3', icon:'https://img.icons8.com/fluency/96/books.png' },
+  { id:'level10',      name:'Fishing Hole',      desc:'Reach Level 10',                             color:'#1a6ea8', icon:'https://img.icons8.com/fluency/96/fish.png' },
+  { id:'level15',      name:'Chess Master',      desc:'Reach Level 15',                             color:'#5b2d8e', icon:'https://img.icons8.com/fluency/96/chess.png' },
+  { id:'level25',      name:'Hiking Trail',      desc:'Reach Level 25',                             color:'#d35400', icon:'https://img.icons8.com/fluency/96/trekking.png' },
+  { id:'level50',      name:'Golden Years',      desc:'Reach Level 50 — true legend!',              color:'#d4ac0d', icon:'https://img.icons8.com/fluency/96/star.png' },
+  { id:'streak20',     name:'Knitting Circle',   desc:'20 correct in a row',                        color:'#c0392b', icon:'https://img.icons8.com/fluency/96/yarn-ball.png' },
+  { id:'speed1',       name:'Quick Reflexes',    desc:'Answer correctly within 1 second',           color:'#00a878', icon:'https://img.icons8.com/fluency/96/stopwatch.png' },
+  { id:'speed5',       name:'Lightning Mind',    desc:'Answer within 1 second 5 times',             color:'#d4ac0d', icon:'https://img.icons8.com/fluency/96/lightning-bolt.png' },
+  { id:'play30min',    name:'Afternoon Stroll',  desc:'Play for 30 minutes total',                  color:'#1e8449', icon:'https://img.icons8.com/fluency/96/sun.png' },
+  { id:'perfectlevel', name:'Sunday Crossword',  desc:'Complete a full level without any mistakes', color:'#1a5276', icon:'https://img.icons8.com/fluency/96/crossword.png' }
+];
 
 // ── STATE ─────────────────────────────────────────────────────────────────
 var EMOJIS = {car:'🚗',truck:'🚚',taxi:'🚕'};
