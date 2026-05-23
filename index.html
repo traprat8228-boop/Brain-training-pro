@@ -779,7 +779,7 @@ document.getElementById('peripheral-grid').addEventListener('click', function(e)
       if (userData.level >= 25) unlockBadge('level25');
       if (userData.level >= 50) unlockBadge('level50');
       // Taxi unlock
-      if (!taxiUnlocked && userData.level >= 3) {
+      if (!taxiUnlocked && userData.level >= 2) {
         taxiUnlocked = true;
         document.getElementById('choice-taxi').classList.remove('hidden');
         saveProgress(); updateXPUI();
