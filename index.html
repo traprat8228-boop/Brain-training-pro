@@ -372,13 +372,28 @@ var BADGES = [
 
 // ── STATE ─────────────────────────────────────────────────────────────────
 var IMGS = {
-  car:   'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Oncoming%20automobile/3D/oncoming_automobile_3d.png',
-  truck: 'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Delivery%20truck/3D/delivery_truck_3d.png',
-  taxi:  'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Taxi/3D/taxi_3d.png',
-  stop:  'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Stop%20sign/3D/stop_sign_3d.png',
-  ring:  'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Blue%20circle/3D/blue_circle_3d.png',
-  ask:   'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Red%20question%20mark/3D/red_question_mark_3d.png'
+  car:    'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Oncoming%20automobile/3D/oncoming_automobile_3d.png',
+  truck:  'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Delivery%20truck/3D/delivery_truck_3d.png',
+  taxi:   'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Taxi/3D/taxi_3d.png',
+  stop:   'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Glowing%20star/3D/glowing_star_3d.png',
+  ask:    'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Red%20question%20mark/3D/red_question_mark_3d.png',
+  // Distractor circles — unlocked progressively by level
+  blue:   'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Blue%20circle/3D/blue_circle_3d.png',
+  green:  'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Green%20circle/3D/green_circle_3d.png',
+  orange: 'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Orange%20circle/3D/orange_circle_3d.png',
+  purple: 'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Purple%20circle/3D/purple_circle_3d.png',
+  yellow: 'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Yellow%20circle/3D/yellow_circle_3d.png'
 };
+
+// Returns the pool of distractor circle URLs based on current level
+function getDistractorPool() {
+  var pool = [IMGS.blue];
+  if (userData.level >= 5)  pool.push(IMGS.green);
+  if (userData.level >= 10) pool.push(IMGS.orange);
+  if (userData.level >= 15) pool.push(IMGS.purple);
+  if (userData.level >= 20) pool.push(IMGS.yellow);
+  return pool;
+}
 var XP_MAX = 5;
 var userData  = {name:'Guest Player',level:1,xp:0};
 var gameState = {targetVehicle:'car',currentStep:'none',tutorialActive:false};
@@ -693,6 +708,7 @@ function playRound() {
   center.classList.remove('hidden');
   var grid = document.getElementById('peripheral-grid');
   var correctIdx = Math.floor(Math.random()*8);
+  var distractors = getDistractorPool();
   for (var i = 0; i < 8; i++) {
     var angle = i * 45 * Math.PI / 180;
     var el = document.createElement('div');
@@ -703,7 +719,8 @@ function playRound() {
       el.innerHTML = '<img src="' + IMGS.stop + '" width="44" height="44">';
       el.id = 'target-sign';
     } else {
-      el.innerHTML = '<img src="' + IMGS.ring + '" width="44" height="44">';
+      var randomDistractor = distractors[Math.floor(Math.random() * distractors.length)];
+      el.innerHTML = '<img src="' + randomDistractor + '" width="44" height="44">';
     }
     grid.appendChild(el);
   }
