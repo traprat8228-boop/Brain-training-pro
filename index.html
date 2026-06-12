@@ -727,7 +727,7 @@ function playRound() {
   if (gameState.tutorialActive) {
     center.classList.add('tutorial-highlight');
     document.getElementById('target-sign').classList.add('tutorial-highlight');
-    updateTutorial('Step 1 of 3','Memorize the vehicle in the center and where the stop sign is.',true,function(){
+    updateTutorial('Step 1 of 3','Memorize the vehicle in the center and where the ⭐ gold star is.',true,function(){
       center.classList.remove('tutorial-highlight');
       document.getElementById('target-sign').classList.remove('tutorial-highlight');
       goToVehicleSelect();
@@ -767,6 +767,7 @@ function selectVehicle(choice) {
     gameState.currentStep = 'sign';
     showOverlay('none');
     roundStartTime = Date.now();
+    var distractorPool = getDistractorPool();
     document.querySelectorAll('.sign').forEach(function(d){
       d.style.visibility='visible';
       d.innerHTML='<img src="' + IMGS.ask + '" width="44" height="44">';
