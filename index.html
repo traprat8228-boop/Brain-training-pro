@@ -226,7 +226,7 @@
         <span>Review how to play</span>
       </div>
     </button>
-    <button class="side-menu-item" onclick="openBadges();closeSideMenu();">
+    <button class="side-menu-item" onclick="closeSideMenu();setTimeout(openBadges,200);">
       <div class="side-menu-item-icon" style="background:#f0f4fb;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
@@ -237,7 +237,7 @@
         <span>View achievements</span>
       </div>
     </button>
-    <button class="side-menu-item" onclick="openStats();closeSideMenu();">
+    <button class="side-menu-item" onclick="closeSideMenu();setTimeout(openStats,200);">
       <div class="side-menu-item-icon" style="background:#e8f4ff;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2471a3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
@@ -740,6 +740,72 @@ function lookupHint() {
     document.getElementById('forgot-msg').innerText = '';
     hintEl.innerText = '💡 Your hint: ' + hint;
     hintEl.style.display = 'block';
+  });
+}
+
+// ── STATS PANEL ───────────────────────────────────────────────────────────
+function openStats() {
+  renderStats();
+  document.getElementById('stats-panel').classList.add('open');
+}
+function closeStats() {
+  document.getElementById('stats-panel').classList.remove('open');
+}
+function closeStatsPanelOutside(e) {
+  if (e.target === document.getElementById('stats-panel')) closeStats();
+}
+
+function renderStats() {
+  // Summary cards
+  var totalMins = Math.floor((totalPlayMs + (sessionStartTime ? Date.now()-sessionStartTime : 0)) / 60000);
+  document.getElementById('stat-level').innerText        = 'Lvl ' + userData.level;
+  document.getElementById('stat-streak').innerText       = bestStreak || consecutiveStreak;
+  document.getElementById('stat-rounds').innerText       = totalRoundsAllTime;
+  document.getElementById('stat-time').innerText         = totalMins + 'm';
+  document.getElementById('stat-login-streak').innerText = loginStreak + ' 🔥';
+
+  // Accuracy this session
+  var acc = sessionRoundsPlayed > 0
+    ? Math.round((sessionRoundsCorrect / sessionRoundsPlayed) * 100) + '%'
+    : '—';
+  document.getElementById('stat-accuracy').innerText = acc;
+
+  // Build charts from session history (last 7 entries)
+  var history = sessionHistory.slice(-7);
+  renderBarChart('stats-chart',   history, 'avgReaction', '#4a90d9', function(v){ return v ? (v/1000).toFixed(1)+'s' : '—'; }, true);
+  renderBarChart('accuracy-chart', history, 'accuracy',   '#00d084', function(v){ return v ? v+'%' : '—'; }, false);
+}
+
+function renderBarChart(containerId, data, key, color, labelFn, lowerIsBetter) {
+  var container = document.getElementById(containerId);
+  container.innerHTML = '';
+  if (!data || data.length === 0) {
+    container.innerHTML = '<div style="width:100%;text-align:center;color:var(--muted);font-size:0.8rem;font-weight:700;padding:20px 0;">Play sessions will appear here</div>';
+    return;
+  }
+  var values = data.map(function(d){ return d[key] || 0; });
+  var maxVal  = Math.max.apply(null, values) || 1;
+  data.forEach(function(session, idx) {
+    var val     = session[key] || 0;
+    var height  = Math.max(8, Math.round((val / maxVal) * 90));
+    if (lowerIsBetter && val > 0) height = Math.max(8, Math.round(((maxVal - val + 1) / maxVal) * 90));
+    var wrap = document.createElement('div');
+    wrap.className = 'chart-bar-wrap';
+    var valLabel = document.createElement('div');
+    valLabel.className = 'chart-bar-val';
+    valLabel.innerText = labelFn(val);
+    var bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    bar.style.height = height + 'px';
+    bar.style.background = color;
+    bar.style.opacity = '0.7';
+    var dateLabel = document.createElement('div');
+    dateLabel.className = 'chart-bar-label';
+    dateLabel.innerText = session.date || ('S' + (idx+1));
+    wrap.appendChild(valLabel);
+    wrap.appendChild(bar);
+    wrap.appendChild(dateLabel);
+    container.appendChild(wrap);
   });
 }
 
