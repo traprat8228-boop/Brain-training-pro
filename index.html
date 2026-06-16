@@ -847,6 +847,7 @@ function startRound() {
 
 // ── SHUFFLE VEHICLE ORDER ─────────────────────────────────────────────────
 function shuffleVehicleChoices() {
+  if (userData.level === 1 && userData.xp < 2) return; // no shuffle for first 2 rounds
   var container = document.querySelector('.choice-container');
   var choices = Array.from(container.children);
   // Fisher-Yates shuffle
