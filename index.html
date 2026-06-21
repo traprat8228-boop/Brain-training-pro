@@ -207,6 +207,11 @@
   </button>
   <span class="app-logo">Brain Training Pro</span>
   <div class="bar-right">
+    <button class="icon-btn" id="pause-btn" onclick="pauseGame()" title="Pause">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#c8d8f0">
+        <rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>
+      </svg>
+    </button>
     <button class="icon-btn" id="stats-btn" onclick="openStats()" title="My Progress">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c8d8f0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
@@ -233,6 +238,17 @@
     </div>
   </div>
   <div class="side-menu-body">
+    <button class="side-menu-item" onclick="closeSideMenu();setTimeout(pauseGame,200);">
+      <div class="side-menu-item-icon" style="background:#e8f4ff;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#2471a3">
+          <rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>
+        </svg>
+      </div>
+      <div class="side-menu-item-text">
+        <strong>Pause Game</strong>
+        <span>Take a break, resume anytime</span>
+      </div>
+    </button>
     <button class="side-menu-item" onclick="closeSideMenu();setTimeout(openLevelSelect,200);">
       <div class="side-menu-item-icon" style="background:#fdeee0;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d35400" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -427,6 +443,15 @@
   <div id="center-anchor" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;">
     <div id="center-target" class="hidden"></div>
   </div>
+
+  <div id="pause-overlay" class="overlay hidden" style="z-index:5000;background:rgba(255,255,255,0.85);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);">
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="var(--navy)" style="margin-bottom:8px;">
+      <rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>
+    </svg>
+    <h2>Game Paused</h2>
+    <p style="font-size:0.85rem;color:var(--muted);margin:0 0 16px;font-weight:700;" id="pause-reason">Take your time</p>
+    <button class="btn-primary" onclick="resumeGame()">Resume ▶</button>
+  </div>
 </div>
 
 <script>
@@ -564,6 +589,13 @@ var totalRoundsAllTime   = 0;
 var sessionHistory       = []; // array of {date, avgReaction, accuracy}
 var practiceLevel        = null; // when set, difficulty uses this instead of userData.level
 
+// ── PAUSE STATE ───────────────────────────────────────────────────────────
+var isPaused = false;
+var pendingTimerCallback = null; // the function that should run when the flash timer completes
+var pendingTimerRemaining = 0;   // ms remaining when paused
+var pendingTimerStartedAt = 0;   // timestamp when the current timer segment started
+var pendingTimerHandle = null;   // setTimeout handle
+
 // ── SAVE PROGRESS ─────────────────────────────────────────────────────────
 function saveProgress() {
   if (!currentUsername) return;
@@ -664,6 +696,7 @@ function unlockBadge(id) {
   var badge = BADGES.find(function(b){return b.id===id;});
   if (!badge) return;
   newBadgeQueue.push(badge);
+  pauseGame('🏅 Badge unlocked! ' + badge.name);
   if (newBadgeQueue.length === 1) showNextBadgeNotif();
 }
 
@@ -994,8 +1027,60 @@ function playRound() {
       goToVehicleSelect();
     });
   } else {
-    setTimeout(goToVehicleSelect, getFlashTime());
+    startPausableTimer(goToVehicleSelect, getFlashTime());
   }
+}
+
+// ── PAUSABLE TIMER ────────────────────────────────────────────────────────
+function startPausableTimer(callback, durationMs) {
+  pendingTimerCallback = callback;
+  pendingTimerRemaining = durationMs;
+  pendingTimerStartedAt = Date.now();
+  if (pendingTimerHandle) clearTimeout(pendingTimerHandle);
+  pendingTimerHandle = setTimeout(function() {
+    pendingTimerCallback = null;
+    pendingTimerHandle = null;
+    callback();
+  }, durationMs);
+}
+
+function pauseActiveTimer() {
+  if (pendingTimerHandle && pendingTimerCallback) {
+    clearTimeout(pendingTimerHandle);
+    pendingTimerHandle = null;
+    var elapsed = Date.now() - pendingTimerStartedAt;
+    pendingTimerRemaining = Math.max(0, pendingTimerRemaining - elapsed);
+  }
+}
+
+function resumeActiveTimer() {
+  if (pendingTimerCallback && pendingTimerRemaining > 0) {
+    pendingTimerStartedAt = Date.now();
+    var cb = pendingTimerCallback;
+    pendingTimerHandle = setTimeout(function() {
+      pendingTimerCallback = null;
+      pendingTimerHandle = null;
+      cb();
+    }, pendingTimerRemaining);
+  }
+}
+
+// ── PAUSE / RESUME ────────────────────────────────────────────────────────
+function pauseGame(reason) {
+  if (isPaused) return;
+  // Only meaningful once a player is signed in and mid-session
+  if (!currentUsername) return;
+  isPaused = true;
+  pauseActiveTimer();
+  document.getElementById('pause-reason').innerText = reason || 'Take your time';
+  document.getElementById('pause-overlay').classList.remove('hidden');
+}
+
+function resumeGame() {
+  if (!isPaused) return;
+  isPaused = false;
+  document.getElementById('pause-overlay').classList.add('hidden');
+  resumeActiveTimer();
 }
 
 // ── TUTORIAL ──────────────────────────────────────────────────────────────
@@ -1023,6 +1108,7 @@ function goToVehicleSelect() {
 }
 
 function selectVehicle(choice) {
+  if (isPaused) return;
   if (choice === gameState.targetVehicle) {
     document.querySelectorAll('.choice').forEach(function(c){c.classList.remove('tutorial-highlight');});
     gameState.currentStep = 'sign';
@@ -1043,6 +1129,7 @@ function selectVehicle(choice) {
 
 // ── SIGN CLICK ────────────────────────────────────────────────────────────
 document.getElementById('peripheral-grid').addEventListener('click', function(e) {
+  if (isPaused) return;
   if (gameState.currentStep !== 'sign') return;
   var sign = e.target.closest('.sign');
   if (!sign) return;
