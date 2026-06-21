@@ -587,6 +587,7 @@ var bestStreak           = 0;
 var totalRoundsAllTime   = 0;
 var sessionHistory       = []; // array of {date, avgReaction, accuracy}
 var practiceLevel        = null; // when set, difficulty uses this instead of userData.level
+var deferredAfterAchievement = null; // function to run once all achievements are dismissed
 
 // ── PAUSE STATE ───────────────────────────────────────────────────────────
 var isPaused = false;
@@ -727,10 +728,15 @@ function dismissAchievement() {
   if (newBadgeQueue.length > 0) {
     // Show the next queued achievement
     showNextAchievement();
-  } else if (currentUsername) {
+  } else {
     // No more achievements — resume the game from wherever it was
     isPaused = false;
     resumeActiveTimer();
+    if (deferredAfterAchievement) {
+      var action = deferredAfterAchievement;
+      deferredAfterAchievement = null;
+      action();
+    }
   }
 }
 
@@ -1206,11 +1212,24 @@ document.getElementById('peripheral-grid').addEventListener('click', function(e)
         toast.id = 'taxi-unlock-toast';
         toast.innerHTML = '<div class="toast-emoji">🚕</div><p class="toast-title">New Vehicle Unlocked!</p><p class="toast-body">The Taxi joins the lineup</p>';
         document.getElementById('play-area').appendChild(toast);
-        setTimeout(function(){toast.remove();startRound();},2400);
+        setTimeout(function(){
+          toast.remove();
+          if (newBadgeQueue.length > 0) {
+            deferredAfterAchievement = startRound;
+          } else {
+            startRound();
+          }
+        },2400);
         return;
       }
     }
-    saveProgress(); updateXPUI(); startRound();
+    saveProgress(); updateXPUI();
+    if (newBadgeQueue.length > 0) {
+      // An achievement is showing — start the next round only after it's dismissed
+      deferredAfterAchievement = startRound;
+    } else {
+      startRound();
+    }
   } else {
     handleLoss();
   }
