@@ -131,7 +131,7 @@
     @keyframes pulse-gold{0%,100%{outline-color:var(--gold);outline-width:4px;}50%{outline-color:#ffe066;outline-width:7px;}}
 
     /* ── PLAY AREA ── */
-    #play-area{position:relative;width:420px;height:420px;border-radius:50%;border:6px solid var(--ring);box-shadow:0 0 0 2px #c0d4f0,0 12px 40px rgba(10,22,40,0.12);margin:10px auto;background:#fff;overflow:hidden;z-index:500;}
+    #play-area{position:relative;width:min(420px, 92vw);height:min(420px, 92vw);border-radius:50%;border:6px solid var(--ring);box-shadow:0 0 0 2px #c0d4f0,0 12px 40px rgba(10,22,40,0.12);margin:10px auto;background:#fff;overflow:hidden;z-index:500;}
 
     /* ── OVERLAYS ── */
     .overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#fff;z-index:2000;padding:30px 28px;text-align:center;border-radius:50%;}
@@ -159,11 +159,14 @@
 
     /* ── GAME ELEMENTS ── */
     #center-target{font-size:80px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.12));transition:transform 0.3s;}
-    .sign{position:absolute;width:64px;height:64px;margin-left:-32px;margin-top:-32px;font-size:44px;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;user-select:none;}
+    #center-target img{width:min(70px, 17vw);height:min(70px, 17vw);}
+    .sign{position:absolute;width:min(64px, 15vw);height:min(64px, 15vw);margin-left:min(-32px, -7.5vw);margin-top:min(-32px, -7.5vw);font-size:44px;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;user-select:none;}
+    .sign img{width:min(44px, 11vw);height:min(44px, 11vw);}
     .clickable{cursor:pointer;pointer-events:auto;}
     .clickable:hover{transform:scale(1.15)!important;}
     .choice-container{display:flex;gap:14px;justify-content:center;margin-top:8px;}
     .choice{cursor:pointer;padding:8px 10px;border-radius:14px;background:var(--bg);border:2.5px solid transparent;transition:transform 0.15s,border-color 0.15s,background 0.15s;line-height:1;}
+    .choice img{width:min(60px, 14vw);height:min(60px, 14vw);}
     .choice:hover{transform:scale(1.18);background:#e8f0ff;border-color:var(--soft-blue);}
 
     /* ── TAXI TOAST ── */
