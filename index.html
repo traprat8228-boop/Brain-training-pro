@@ -989,7 +989,12 @@ function startRound() {
   document.getElementById('peripheral-grid').innerHTML = '';
   document.getElementById('center-target').classList.add('hidden');
   checkPlayTimeBadges();
-  playRound();
+  if (newBadgeQueue.length > 0) {
+    // An achievement is showing (e.g. a play-time badge) — wait for it to be dismissed
+    deferredAfterAchievement = playRound;
+  } else {
+    playRound();
+  }
 }
 
 // ── SHUFFLE VEHICLE ORDER ─────────────────────────────────────────────────
