@@ -95,6 +95,15 @@
     .chart-bar{width:100%;border-radius:6px 6px 0 0;transition:height 0.4s ease;min-height:4px;}
     .chart-bar-label{font-size:0.58rem;font-weight:700;color:var(--muted);text-align:center;white-space:nowrap;overflow:hidden;}
     .chart-bar-val{font-size:0.62rem;font-weight:800;color:var(--navy);}
+
+    /* ── LEVEL SELECT PANEL ── */
+    #level-select-panel{position:fixed;inset:0;background:rgba(10,22,40,0.6);z-index:9500;display:none;align-items:flex-end;justify-content:center;}
+    #level-select-panel.open{display:flex;}
+    .level-select-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+    .level-select-btn{background:#f0f4fb;border:2px solid #dce8f8;border-radius:12px;padding:14px 4px;text-align:center;font-weight:900;font-size:1.1rem;color:var(--navy);cursor:pointer;transition:all 0.15s;}
+    .level-select-btn:hover{background:#e0eaff;border-color:var(--soft-blue);}
+    .level-select-btn.active{background:var(--gold);border-color:var(--gold-dark);color:var(--navy);box-shadow:0 3px 0 var(--gold-dark);}
+    .level-select-btn:active{transform:scale(0.95);}
     #badge-notification{position:fixed;top:60px;right:12px;left:auto;transform:none;z-index:9800;background:var(--navy);color:#fff;border-radius:16px;padding:10px 14px 10px 10px;display:none;align-items:center;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,0.25);border-left:4px solid var(--gold);width:220px;}
     #badge-notification.show{display:flex;animation:notif-in 0.35s ease-out;}
     @keyframes notif-in{from{transform:translateX(60px);opacity:0;}to{transform:translateX(0);opacity:1;}}
@@ -221,6 +230,17 @@
     </div>
   </div>
   <div class="side-menu-body">
+    <button class="side-menu-item" onclick="closeSideMenu();setTimeout(openLevelSelect,200);">
+      <div class="side-menu-item-icon" style="background:#fdeee0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d35400" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="side-menu-item-text">
+        <strong>Replay a Level</strong>
+        <span>Practice an earlier difficulty</span>
+      </div>
+    </button>
     <button class="side-menu-item" onclick="replayTutorial()">
       <div class="side-menu-item-icon" style="background:#fff8e0;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a00d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -318,6 +338,23 @@
       <div class="chart-wrap">
         <div class="chart-bars" id="accuracy-chart"></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEVEL SELECT PANEL -->
+<div id="level-select-panel" onclick="closeLevelSelectOutside(event)">
+  <div class="stats-sheet">
+    <div class="stats-sheet-handle"></div>
+    <div class="stats-sheet-header">
+      <h2>🔁 Replay a Level</h2>
+      <button class="stats-close" onclick="closeLevelSelect()">✕</button>
+    </div>
+    <div class="stats-body">
+      <p style="font-size:0.85rem;color:var(--muted);font-weight:600;margin:0 0 14px;">
+        Practice any difficulty you've already unlocked. Your progress still moves forward as normal — winning rounds can level you up past where you started.
+      </p>
+      <div id="level-select-grid" class="level-select-grid"></div>
     </div>
   </div>
 </div>
@@ -484,13 +521,20 @@ var IMGS = {
   yellow: 'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Yellow%20circle/3D/yellow_circle_3d.png'
 };
 
-// Returns the pool of distractor circle URLs based on current level
+// Returns the level to use for difficulty calculations —
+// either the practice level (if replaying an old level) or the real level
+function getDifficultyLevel() {
+  return practiceLevel !== null ? practiceLevel : userData.level;
+}
+
+// Returns the pool of distractor circle URLs based on current difficulty level
 function getDistractorPool() {
+  var lvl = getDifficultyLevel();
   var pool = [IMGS.blue];
-  if (userData.level >= 5)  pool.push(IMGS.green);
-  if (userData.level >= 10) pool.push(IMGS.orange);
-  if (userData.level >= 15) pool.push(IMGS.purple);
-  if (userData.level >= 20) pool.push(IMGS.yellow);
+  if (lvl >= 5)  pool.push(IMGS.green);
+  if (lvl >= 10) pool.push(IMGS.orange);
+  if (lvl >= 15) pool.push(IMGS.purple);
+  if (lvl >= 20) pool.push(IMGS.yellow);
   return pool;
 }
 var XP_MAX = 5;
@@ -515,6 +559,7 @@ var sessionReactionTimes = []; // ms per correct round this session
 var bestStreak           = 0;
 var totalRoundsAllTime   = 0;
 var sessionHistory       = []; // array of {date, avgReaction, accuracy}
+var practiceLevel        = null; // when set, difficulty uses this instead of userData.level
 
 // ── SAVE PROGRESS ─────────────────────────────────────────────────────────
 function saveProgress() {
@@ -538,7 +583,12 @@ function updateXPUI() {
   for (var i = 0; i < XP_MAX; i++) {
     document.getElementById('pip-'+i).classList.toggle('filled', i < userData.xp);
   }
-  document.getElementById('level-badge').innerText = 'Level ' + userData.level;
+  var badge = document.getElementById('level-badge');
+  if (practiceLevel !== null) {
+    badge.innerText = 'Level ' + userData.level + ' · Practicing Lvl ' + practiceLevel;
+  } else {
+    badge.innerText = 'Level ' + userData.level;
+  }
 }
 
 // ── OVERLAYS ──────────────────────────────────────────────────────────────
@@ -686,6 +736,7 @@ function signInWithGoogle() {
 }
 
 function onAuthSuccess() {
+  practiceLevel = null;
   document.getElementById('user-name').innerText = userData.name;
   document.getElementById('side-menu-username').innerText = userData.name;
   document.getElementById('logout-btn').classList.remove('hidden');
@@ -718,7 +769,7 @@ function handleLogout() {
   gameState = {targetVehicle:'car',currentStep:'none',tutorialActive:false};
   taxiUnlocked = false; consecutiveStreak = 0; earnedBadges = {}; loginStreak = 0;
   sessionRoundsPlayed = 0; sessionRoundsCorrect = 0; sessionReactionTimes = [];
-  bestStreak = 0; totalRoundsAllTime = 0; sessionHistory = [];
+  bestStreak = 0; totalRoundsAllTime = 0; sessionHistory = []; practiceLevel = null;
   document.getElementById('choice-taxi').classList.add('hidden');
   document.getElementById('user-name').innerText = 'Guest Player';
   document.getElementById('side-menu-username').innerText = 'Welcome!';
@@ -798,17 +849,67 @@ function renderBarChart(containerId, data, key, color, labelFn, lowerIsBetter) {
   });
 }
 
+// ── LEVEL SELECT PANEL ────────────────────────────────────────────────────
+function openLevelSelect() {
+  renderLevelSelect();
+  document.getElementById('level-select-panel').classList.add('open');
+}
+function closeLevelSelect() {
+  document.getElementById('level-select-panel').classList.remove('open');
+}
+function closeLevelSelectOutside(e) {
+  if (e.target === document.getElementById('level-select-panel')) closeLevelSelect();
+}
+
+function renderLevelSelect() {
+  var grid = document.getElementById('level-select-grid');
+  grid.innerHTML = '';
+
+  // "Current" button — clears practice mode, returns to real level
+  var currentBtn = document.createElement('div');
+  currentBtn.className = 'level-select-btn' + (practiceLevel === null ? ' active' : '');
+  currentBtn.style.gridColumn = 'span 4';
+  currentBtn.innerHTML = 'Current Level (' + userData.level + ')';
+  currentBtn.onclick = function() { selectPracticeLevel(null); };
+  grid.appendChild(currentBtn);
+
+  // Only past levels (1 through current-1) are selectable
+  for (var lvl = 1; lvl < userData.level; lvl++) {
+    var btn = document.createElement('div');
+    btn.className = 'level-select-btn' + (practiceLevel === lvl ? ' active' : '');
+    btn.innerText = lvl;
+    btn.onclick = (function(l) { return function() { selectPracticeLevel(l); }; })(lvl);
+    grid.appendChild(btn);
+  }
+
+  if (userData.level === 1) {
+    var msg = document.createElement('div');
+    msg.style.cssText = 'grid-column:span 4;text-align:center;color:var(--muted);font-size:0.8rem;font-weight:700;padding:10px 0;';
+    msg.innerText = 'Reach Level 2 to unlock replaying earlier levels.';
+    grid.appendChild(msg);
+  }
+}
+
+function selectPracticeLevel(lvl) {
+  practiceLevel = lvl;
+  renderLevelSelect();
+  closeLevelSelect();
+  // Start a fresh round immediately at the chosen difficulty
+  startRound();
+}
+
 // ── DIFFICULTY ────────────────────────────────────────────────────────────
 function getFlashTime() {
   // Starts at 2000ms, decreases 4% per level from level 1
   // After level 10 an additional 5% compound reduction every 3 levels
+  var lvl = getDifficultyLevel();
   var t = 2000;
   // Gradual reduction every level (4% per level, floor at 400ms)
-  var levelSteps = Math.max(0, userData.level - 1);
+  var levelSteps = Math.max(0, lvl - 1);
   for (var i = 0; i < levelSteps; i++) { t *= 0.96; }
   // Extra compound reduction above level 10
-  if (userData.level > 10) {
-    var extraSteps = Math.floor((userData.level - 10) / 3);
+  if (lvl > 10) {
+    var extraSteps = Math.floor((lvl - 10) / 3);
     for (var j = 0; j < extraSteps; j++) { t *= 0.95; }
   }
   return Math.max(400, t);
