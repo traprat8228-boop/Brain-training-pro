@@ -104,13 +104,13 @@
     .level-select-btn:hover{background:#e0eaff;border-color:var(--soft-blue);}
     .level-select-btn.active{background:var(--gold);border-color:var(--gold-dark);color:var(--navy);box-shadow:0 3px 0 var(--gold-dark);}
     .level-select-btn:active{transform:scale(0.95);}
-    #badge-notification{position:fixed;top:60px;right:12px;left:auto;transform:none;z-index:9800;background:var(--navy);color:#fff;border-radius:16px;padding:10px 14px 10px 10px;display:none;align-items:center;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,0.25);border-left:4px solid var(--gold);width:220px;}
-    #badge-notification.show{display:flex;animation:notif-in 0.35s ease-out;}
-    @keyframes notif-in{from{transform:translateX(60px);opacity:0;}to{transform:translateX(0);opacity:1;}}
-    .notif-icon{width:44px;height:44px;border-radius:50%;background:rgba(245,197,24,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .notif-icon svg{width:38px;height:38px;}
-    .notif-text strong{display:block;font-size:0.8rem;font-weight:900;color:var(--gold);line-height:1.2;}
-    .notif-text span{font-size:0.7rem;color:#c8d8f0;font-weight:600;}
+    #achievement-overlay{z-index:5500;background:rgba(255,255,255,0.97);}
+    #achievement-overlay .ach-icon-wrap{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,0.15);animation:ach-pop 0.5s cubic-bezier(.34,1.56,.64,1);}
+    #achievement-overlay .ach-icon-wrap img{width:72px;height:72px;}
+    @keyframes ach-pop{0%{transform:scale(0.3);opacity:0;}60%{transform:scale(1.15);}100%{transform:scale(1);opacity:1;}}
+    .ach-headline{font-family:'Orbitron',sans-serif;font-size:1.05rem;font-weight:900;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin:0 0 6px;}
+    .ach-name{font-size:1.25rem;font-weight:900;color:var(--navy);margin:0 0 6px;}
+    .ach-desc{font-size:0.85rem;color:var(--muted);font-weight:700;margin:0 0 18px;}
 
     /* ── PROFILE STRIP ── */
     .user-profile{width:100%;max-width:440px;display:flex;align-items:center;gap:12px;padding:12px 16px;}
@@ -188,15 +188,6 @@
 </head>
 <body>
 <div id="save-tag">SAVE 3.0.0</div>
-
-<!-- BADGE UNLOCK NOTIFICATION -->
-<div id="badge-notification">
-  <div class="notif-icon" id="notif-icon-wrap"></div>
-  <div class="notif-text">
-    <strong id="notif-title">Badge Unlocked!</strong>
-    <span id="notif-body">Well done!</span>
-  </div>
-</div>
 
 <!-- UTILITY BAR -->
 <div class="utility-bar">
@@ -452,6 +443,14 @@
     <p style="font-size:0.85rem;color:var(--muted);margin:0 0 16px;font-weight:700;" id="pause-reason">Take your time</p>
     <button class="btn-primary" onclick="resumeGame()">Resume ▶</button>
   </div>
+
+  <div id="achievement-overlay" class="overlay hidden">
+    <div class="ach-icon-wrap" id="ach-icon-wrap"></div>
+    <p class="ach-headline">🎉 Achievement Unlocked!!! 🎉</p>
+    <h2 class="ach-name" id="ach-name">Badge Name</h2>
+    <p class="ach-desc" id="ach-desc">Description</p>
+    <button class="btn-primary" onclick="dismissAchievement()">Achievement Unlocked! Resume ▶</button>
+  </div>
 </div>
 
 <script>
@@ -696,24 +695,43 @@ function unlockBadge(id) {
   var badge = BADGES.find(function(b){return b.id===id;});
   if (!badge) return;
   newBadgeQueue.push(badge);
-  pauseGame('🏅 Badge unlocked! ' + badge.name);
-  if (newBadgeQueue.length === 1) showNextBadgeNotif();
+  document.getElementById('badge-dot').classList.add('active');
+  if (newBadgeQueue.length === 1) showNextAchievement();
 }
 
-function showNextBadgeNotif() {
+function showNextAchievement() {
   if (newBadgeQueue.length === 0) return;
   var badge = newBadgeQueue[0];
-  document.getElementById('notif-icon-wrap').innerHTML = '<img src="' + badge.icon + '" width="32" height="32" />';
-  document.getElementById('notif-title').innerText = badge.name + ' Unlocked!';
-  document.getElementById('notif-body').innerText = badge.desc;
-  var notif = document.getElementById('badge-notification');
-  notif.classList.add('show');
-  document.getElementById('badge-dot').classList.add('active');
-  setTimeout(function() {
-    notif.classList.remove('show');
-    newBadgeQueue.shift();
-    setTimeout(showNextBadgeNotif, 400);
-  }, 3500);
+
+  // Pause the game and freeze the timer while the achievement is shown
+  if (currentUsername) {
+    isPaused = true;
+    pauseActiveTimer();
+  }
+
+  document.getElementById('ach-icon-wrap').style.background = badge.color;
+  document.getElementById('ach-icon-wrap').innerHTML = '<img src="' + badge.icon + '" width="72" height="72" />';
+  document.getElementById('ach-name').innerText = badge.name;
+  document.getElementById('ach-desc').innerText = badge.desc;
+
+  // Show as a layer on top — does NOT hide whatever overlay is currently active underneath
+  document.getElementById('achievement-overlay').classList.remove('hidden');
+  soundUnlock();
+  fireLevelUpConfetti();
+}
+
+function dismissAchievement() {
+  document.getElementById('achievement-overlay').classList.add('hidden');
+  newBadgeQueue.shift();
+
+  if (newBadgeQueue.length > 0) {
+    // Show the next queued achievement
+    showNextAchievement();
+  } else if (currentUsername) {
+    // No more achievements — resume the game from wherever it was
+    isPaused = false;
+    resumeActiveTimer();
+  }
 }
 
 // ── AUTH (Google Sign-In) ────────────────────────────────────────────────
