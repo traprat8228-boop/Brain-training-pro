@@ -808,7 +808,12 @@ function onAuthSuccess() {
   if (loginStreak >= 7) unlockBadge('login7');
   // Check play time badges
   checkPlayTimeBadges();
+  // Show start screen — if an achievement fired, it will layer on top of start-overlay
   showOverlay('start-overlay');
+  // If achievements are queued, show them now (they sit above start-overlay)
+  if (newBadgeQueue.length > 0 && !isPaused) {
+    showNextAchievement();
+  }
 }
 
 function handleLogout() {
@@ -988,13 +993,7 @@ function startRound() {
   showOverlay('none');
   document.getElementById('peripheral-grid').innerHTML = '';
   document.getElementById('center-target').classList.add('hidden');
-  checkPlayTimeBadges();
-  if (newBadgeQueue.length > 0) {
-    // An achievement is showing (e.g. a play-time badge) — wait for it to be dismissed
-    deferredAfterAchievement = playRound;
-  } else {
-    playRound();
-  }
+  playRound();
 }
 
 // ── SHUFFLE VEHICLE ORDER ─────────────────────────────────────────────────
