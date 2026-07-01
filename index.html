@@ -965,14 +965,10 @@ function selectPracticeLevel(lvl) {
 
 // ── DIFFICULTY ────────────────────────────────────────────────────────────
 function getFlashTime() {
-  // Starts at 2000ms, decreases 4% per level from level 1
-  // After level 10 an additional 5% compound reduction every 3 levels
   var lvl = getDifficultyLevel();
-  var t = 2000;
-  // Gradual reduction every level (4% per level, floor at 400ms)
+  var t = 4000;
   var levelSteps = Math.max(0, lvl - 1);
-  for (var i = 0; i < levelSteps; i++) { t *= 0.96; }
-  // Extra compound reduction above level 10
+  for (var i = 0; i < levelSteps; i++) { t *= 0.97; }
   if (lvl > 10) {
     var extraSteps = Math.floor((lvl - 10) / 3);
     for (var j = 0; j < extraSteps; j++) { t *= 0.95; }
