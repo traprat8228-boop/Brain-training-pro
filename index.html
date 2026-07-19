@@ -51,8 +51,8 @@
     .side-menu-item{display:flex;align-items:center;gap:14px;padding:14px 12px;border-radius:12px;cursor:pointer;transition:background 0.2s;border:none;background:transparent;width:100%;text-align:left;font-family:'Nunito',sans-serif;}
     .side-menu-item:hover{background:#f0f4fb;}
     .side-menu-item-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .side-menu-item-text strong{display:block;font-size:0.95rem;font-weight:800;color:var(--navy);}
-    .side-menu-item-text span{font-size:0.78rem;color:var(--muted);font-weight:600;}
+    .side-menu-item-text strong{display:block;font-size:1.14rem;font-weight:800;color:var(--navy);}
+    .side-menu-item-text span{font-size:0.94rem;color:var(--muted);font-weight:600;}
     .side-menu-close{margin:0 14px 16px;padding:10px;border-radius:10px;border:1.5px solid #dce8f8;background:transparent;cursor:pointer;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700;color:var(--muted);transition:all 0.2s;}
     .side-menu-close:hover{border-color:var(--navy);color:var(--navy);}
 
@@ -71,8 +71,8 @@
     .badge-card.locked{opacity:0.55;}
     .badge-icon-wrap{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative;}
     .badge-card.locked .badge-icon-wrap::after{content:'🔒';position:absolute;bottom:0px;right:0px;font-size:18px;background:#fff;border-radius:50%;padding:2px;line-height:1;}
-    .badge-name{font-size:0.88rem;font-weight:900;color:var(--navy);line-height:1.2;margin-bottom:4px;}
-    .badge-desc{font-size:0.72rem;color:var(--muted);font-weight:600;line-height:1.4;}
+    .badge-name{font-size:1.06rem;font-weight:900;color:var(--navy);line-height:1.2;margin-bottom:4px;}
+    .badge-desc{font-size:0.86rem;color:var(--muted);font-weight:600;line-height:1.4;}
     .badge-card.unlocked .badge-name{color:#7a5500;}
 
     /* ── STATS PANEL ── */
@@ -86,9 +86,9 @@
     .stats-body{padding:16px 20px;}
     .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;}
     .stat-card{background:#f0f4fb;border-radius:14px;padding:12px 8px;text-align:center;}
-    .stat-card .stat-value{font-size:1.4rem;font-weight:900;color:var(--navy);line-height:1;}
-    .stat-card .stat-label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-top:4px;}
-    .stats-section-title{font-size:0.75rem;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:16px 0 10px;}
+    .stat-card .stat-value{font-size:1.68rem;font-weight:900;color:var(--navy);line-height:1;}
+    .stat-card .stat-label{font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-top:4px;}
+    .stats-section-title{font-size:0.9rem;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:16px 0 10px;}
     .chart-wrap{background:#f0f4fb;border-radius:16px;padding:14px 10px 8px;position:relative;}
     .chart-bars{display:flex;align-items:flex-end;gap:5px;height:100px;}
     .chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
@@ -116,8 +116,8 @@
     .user-profile{width:100%;max-width:440px;display:flex;align-items:center;gap:12px;padding:12px 16px;}
     .profile-icon{width:42px;height:42px;border-radius:50%;background:var(--navy);color:var(--soft-blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(10,22,40,0.15);}
     .user-meta{display:flex;flex-direction:column;flex:1;}
-    #user-name{font-weight:900;font-size:1rem;color:var(--navy);line-height:1.2;}
-    #level-badge{font-size:0.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;}
+    #user-name{font-weight:900;font-size:1.2rem;color:var(--navy);line-height:1.2;}
+    #level-badge{font-size:0.86rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;}
     .xp-pips{display:flex;gap:5px;align-items:center;flex-shrink:0;}
     .pip{width:15px;height:15px;border-radius:50%;background:#dce8f8;border:2px solid #c0d0e8;transition:background 0.4s,border-color 0.4s,transform 0.3s;}
     .pip.filled{background:var(--green);border-color:var(--green-dark);transform:scale(1.1);box-shadow:0 0 6px rgba(0,208,132,0.5);}
@@ -135,18 +135,18 @@
 
     /* ── OVERLAYS ── */
     .overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#fff;z-index:2000;padding:30px 28px;text-align:center;border-radius:50%;}
-    .overlay h2{margin:0 0 12px;font-size:1.25rem;color:var(--navy);font-weight:900;}
+    .overlay h2{margin:0 0 12px;font-size:1.5rem;color:var(--navy);font-weight:900;}
     .hidden{display:none!important;}
 
     /* ── BUTTONS ── */
-    .btn-primary{background:var(--gold);color:var(--navy);border:none;padding:11px 20px;border-radius:12px;font-weight:900;cursor:pointer;box-shadow:0 4px 0 var(--gold-dark);margin:4px 0;width:78%;font-size:0.9rem;font-family:'Nunito',sans-serif;transition:transform 0.1s,box-shadow 0.1s;letter-spacing:0.3px;}
+    .btn-primary{background:var(--gold);color:var(--navy);border:none;padding:13px 20px;border-radius:12px;font-weight:900;cursor:pointer;box-shadow:0 4px 0 var(--gold-dark);margin:4px 0;width:78%;font-size:1.08rem;font-family:'Nunito',sans-serif;transition:transform 0.1s,box-shadow 0.1s;letter-spacing:0.3px;}
     .btn-primary:active{transform:translateY(2px);box-shadow:0 2px 0 var(--gold-dark);}
     .btn-primary:hover{background:#ffd330;}
-    .btn-secondary{background:transparent;color:var(--muted);border:1.5px solid #dce8f8;padding:8px 16px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:5px;width:60%;font-size:0.78rem;font-family:'Nunito',sans-serif;transition:border-color 0.2s,color 0.2s;}
+    .btn-secondary{background:transparent;color:var(--muted);border:1.5px solid #dce8f8;padding:9px 16px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:5px;width:60%;font-size:0.94rem;font-family:'Nunito',sans-serif;transition:border-color 0.2s,color 0.2s;}
     .btn-secondary:hover{border-color:#b0c8e8;color:var(--navy);}
-    input{padding:10px 14px;border:2px solid #dce8f8;border-radius:10px;margin-bottom:7px;width:78%;text-align:center;font-size:0.88rem;font-family:'Nunito',sans-serif;font-weight:600;color:var(--navy);outline:none;transition:border-color 0.2s;}
+    input{padding:12px 14px;border:2px solid #dce8f8;border-radius:10px;margin-bottom:7px;width:78%;text-align:center;font-size:1.06rem;font-family:'Nunito',sans-serif;font-weight:600;color:var(--navy);outline:none;transition:border-color 0.2s;}
     input:focus{border-color:var(--navy);}
-    .auth-msg{font-size:0.78rem;font-weight:700;margin:3px 0 0;min-height:16px;}
+    .auth-msg{font-size:0.94rem;font-weight:700;margin:3px 0 0;min-height:16px;}
     .auth-msg.error{color:var(--red);}
     .auth-msg.info{color:var(--muted);}
 
@@ -251,6 +251,17 @@
         <span>Practice an earlier difficulty</span>
       </div>
     </button>
+    <button class="side-menu-item" onclick="closeSideMenu();setTimeout(openHowToPlay,200);">
+      <div class="side-menu-item-icon" style="background:#e8f4ff;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2471a3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <div class="side-menu-item-text">
+        <strong>How to Play</strong>
+        <span>Game instructions</span>
+      </div>
+    </button>
     <button class="side-menu-item" onclick="replayTutorial()">
       <div class="side-menu-item-icon" style="background:#fff8e0;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9a00d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -300,6 +311,62 @@
       </div>
     </div>
     <div class="badges-grid" id="badges-grid"></div>
+  </div>
+</div>
+
+<!-- HOW TO PLAY PANEL -->
+<div id="howtoplay-panel" onclick="closeHowToPlayOutside(event)" style="position:fixed;inset:0;background:rgba(10,22,40,0.6);z-index:9500;display:none;align-items:flex-end;justify-content:center;">
+  <div class="stats-sheet">
+    <div class="stats-sheet-handle"></div>
+    <div class="stats-sheet-header">
+      <h2>📖 How to Play</h2>
+      <button class="stats-close" onclick="closeHowToPlay()">✕</button>
+    </div>
+    <div class="stats-body" style="padding:16px 20px 10px;">
+
+      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#4a90d9;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem;">1</div>
+        <div>
+          <div style="font-weight:900;font-size:1.05rem;color:var(--navy);margin-bottom:3px;">Memorize</div>
+          <div style="font-size:0.9rem;color:var(--muted);font-weight:600;line-height:1.4;">A vehicle appears in the center of the circle. At the same time, a gold ⭐ star appears somewhere around the ring. Remember both!</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#27ae60;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem;">2</div>
+        <div>
+          <div style="font-weight:900;font-size:1.05rem;color:var(--navy);margin-bottom:3px;">Pick the Vehicle</div>
+          <div style="font-size:0.9rem;color:var(--muted);font-weight:600;line-height:1.4;">The vehicle disappears. Tap the correct vehicle from the choices shown — car, truck, or taxi.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#e67e22;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem;">3</div>
+        <div>
+          <div style="font-weight:900;font-size:1.05rem;color:var(--navy);margin-bottom:3px;">Find the Star</div>
+          <div style="font-size:0.9rem;color:var(--muted);font-weight:600;line-height:1.4;">The ring markers turn into ❓ question marks. Tap the one where you saw the gold star!</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#f5c518;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem;">⭐</div>
+        <div>
+          <div style="font-weight:900;font-size:1.05rem;color:var(--navy);margin-bottom:3px;">Earn XP &amp; Level Up</div>
+          <div style="font-size:0.9rem;color:var(--muted);font-weight:600;line-height:1.4;">Every correct round fills one pip on your progress bar. Fill all 5 to level up! The game gets faster as you progress.</div>
+        </div>
+      </div>
+
+      <div style="background:#f0f4fb;border-radius:14px;padding:14px 16px;margin-bottom:10px;">
+        <div style="font-weight:900;font-size:0.95rem;color:var(--navy);margin-bottom:6px;">💡 Tips</div>
+        <div style="font-size:0.88rem;color:var(--muted);font-weight:600;line-height:1.6;">
+          • Focus on the center vehicle first, then quickly glance at the star position<br>
+          • Wrong answers cost you one pip — but you can always earn it back!<br>
+          • Play a little every day for the best brain-training results<br>
+          • The taxi 🚕 unlocks at Level 2
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -848,6 +915,17 @@ function handleLogout() {
   showOverlay('entry-overlay');
 }
 
+// ── HOW TO PLAY ───────────────────────────────────────────────────────────
+function openHowToPlay() {
+  document.getElementById('howtoplay-panel').style.display = 'flex';
+}
+function closeHowToPlay() {
+  document.getElementById('howtoplay-panel').style.display = 'none';
+}
+function closeHowToPlayOutside(e) {
+  if (e.target === document.getElementById('howtoplay-panel')) closeHowToPlay();
+}
+
 // ── STATS PANEL ───────────────────────────────────────────────────────────
 function openStats() {
   renderStats();
@@ -966,7 +1044,7 @@ function selectPracticeLevel(lvl) {
 // ── DIFFICULTY ────────────────────────────────────────────────────────────
 function getFlashTime() {
   var lvl = getDifficultyLevel();
-  var t = 4000;
+  var t = 5000;
   var levelSteps = Math.max(0, lvl - 1);
   for (var i = 0; i < levelSteps; i++) { t *= 0.97; }
   if (lvl > 10) {
